@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "id": "react-habit-toggle",
+  "title": "Build a habit toggle",
+  "project": {
+    "name": "habit-tracker",
+    "entryFile": "src/components/HabitRow.tsx",
+    "commands": {
+      "dev": {
+        "executable": "pnpm",
+        "args": ["dev"]
+      },
+      "check": {
+        "executable": "pnpm",
+        "args": ["test", "toggle-habit"]
+      }
+    }
+  },
+  "audio": {
+    "src": "audio/codecast.wav",
+    "format": "pcm-wav",
+    "durationMs": 70000
+  },
+  "cues": [
+    {
+      "id": "intro",
+      "text": "Open HabitRow and trace how a click changes the completed state.",
+      "startMs": 0,
+      "endMs": 15000
+    },
+    {
+      "id": "challenge",
+      "text": "Implement the toggle, then prove it with the focused test.",
+      "startMs": 15000,
+      "endMs": 70000
+    }
+  ],
+  "events": [
+    {
+      "id": "open-row",
+      "type": "editor.open",
+      "atMs": 2500,
+      "path": "src/components/HabitRow.tsx"
+    },
+    {
+      "id": "focus-toggle",
+      "type": "editor.focusRange",
+      "atMs": 8000,
+      "path": "src/components/HabitRow.tsx",
+      "range": {
+        "start": { "line": 12, "column": 3 },
+        "end": { "line": 14, "column": 8 }
+      }
+    },
+    {
+      "id": "start-toggle",
+      "type": "challenge.start",
+      "atMs": 15000,
+      "challengeId": "toggle-habit"
+    },
+    {
+      "id": "preview-result",
+      "type": "preview.show",
+      "atMs": 65000,
+      "url": "/"
+    },
+    {
+      "id": "complete-toggle",
+      "type": "challenge.complete",
+      "atMs": 69000,
+      "challengeId": "toggle-habit"
+    }
+  ],
+  "challenges": [
+    {
+      "id": "toggle-habit",
+      "title": "Toggle the selected habit",
+      "instruction": "Update the learner-owned seam so clicking a row toggles its completed state.",
+      "seam": {
+        "path": "src/components/HabitRow.tsx",
+        "startLine": 12,
+        "endLine": 14
+      },
+      "hints": [
+        "Find the state transition triggered by the row click.",
+        "The next value depends on the current completed value.",
+        "Call the supplied change handler with the opposite completed value."
+      ],
+      "checkCommandId": "check"
+    }
+  ]
+}

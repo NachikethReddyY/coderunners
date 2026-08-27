@@ -1,0 +1,599 @@
+{
+  "$id": "https://coderunners.local/schemas/codecast-manifest.json",
+  "additionalProperties": false,
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "id",
+    "title",
+    "project",
+    "audio",
+    "cues",
+    "events",
+    "challenges"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1,
+      "type": "number"
+    },
+    "id": {
+      "minLength": 1,
+      "maxLength": 80,
+      "pattern": "^[a-z0-9]+(?:[a-z0-9-]*[a-z0-9])?$",
+      "type": "string"
+    },
+    "title": {
+      "minLength": 1,
+      "maxLength": 160,
+      "type": "string"
+    },
+    "project": {
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "name",
+        "entryFile",
+        "commands"
+      ],
+      "properties": {
+        "name": {
+          "minLength": 1,
+          "maxLength": 120,
+          "type": "string"
+        },
+        "entryFile": {
+          "minLength": 1,
+          "maxLength": 512,
+          "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\).+$",
+          "type": "string"
+        },
+        "commands": {
+          "minProperties": 1,
+          "maxProperties": 12,
+          "type": "object",
+          "patternProperties": {
+            "^[a-z0-9]+(?:[a-z0-9-]*[a-z0-9])?$": {
+              "additionalProperties": false,
+              "type": "object",
+              "required": [
+                "executable",
+                "args"
+              ],
+              "properties": {
+                "executable": {
+                  "anyOf": [
+                    {
+                      "const": "node",
+                      "type": "string"
+                    },
+                    {
+                      "const": "npm",
+                      "type": "string"
+                    },
+                    {
+                      "const": "pnpm",
+                      "type": "string"
+                    },
+                    {
+                      "const": "python3",
+                      "type": "string"
+                    },
+                    {
+                      "const": "uv",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "args": {
+                  "maxItems": 24,
+                  "type": "array",
+                  "items": {
+                    "maxLength": 240,
+                    "type": "string"
+                  }
+                },
+                "cwd": {
+                  "minLength": 1,
+                  "maxLength": 512,
+                  "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\).+$",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "audio": {
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "src",
+        "format",
+        "durationMs"
+      ],
+      "properties": {
+        "src": {
+          "minLength": 1,
+          "maxLength": 512,
+          "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\).+$",
+          "type": "string"
+        },
+        "format": {
+          "const": "pcm-wav",
+          "type": "string"
+        },
+        "durationMs": {
+          "minimum": 1,
+          "type": "integer"
+        }
+      }
+    },
+    "cues": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "text",
+          "startMs",
+          "endMs"
+        ],
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "maxLength": 80,
+            "pattern": "^[a-z0-9]+(?:[a-z0-9-]*[a-z0-9])?$",
+            "type": "string"
+          },
+          "text": {
+            "minLength": 1,
+            "maxLength": 4000,
+            "type": "string"
+          },
+          "startMs": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "endMs": {
+            "minimum": 1,
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "$id": "LessonEvent",
+        "anyOf": [
+          {
+            "additionalProperties": false,
+            "type": "object",
+            "required": [
+              "id",
+              "atMs",
+              "type",
+              "title"
+            ],
+            "properties": {
+              "id": {
+                "minLength": 1,
+                "maxLength": 80,
+                "pattern": "^[a-z0-9]+(?:[a-z0-9-]*[a-z0-9])?$",
+                "type": "string"
+              },
+              "atMs": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "type": {
+                "const": "chapter",
+                "type": "string"
+              },
+              "title": {
+                "minLength": 1,
+                "maxLength": 120,
+                "type": "string"
+              }
+            }
+          },
+          {
+            "additionalProperties": false,
+            "type": "object",
+            "required": [
+              "id",
+              "atMs",
+              "type",
+              "path"
+            ],
+            "properties": {
+              "id": {
+                "minLength": 1,
+                "maxLength": 80,
+                "pattern": "^[a-z0-9]+(?:[a-z0-9-]*[a-z0-9])?$",
+                "type": "string"
+              },
+              "atMs": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "type": {
+                "const": "editor.open",
+                "type": "string"
+              },
+              "path": {
+                "minLength": 1,
+                "maxLength": 512,
+                "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\).+$",
+                "type": "string"
+              }
+            }
+          },
+          {
+            "additionalProperties": false,
+            "type": "object",
+            "required": [
+              "id",
+              "atMs",
+              "type",
+              "path",
+              "range"
+            ],
+            "properties": {
+              "id": {
+                "minLength": 1,
+                "maxLength": 80,
+                "pattern": "^[a-z0-9]+(?:[a-z0-9-]*[a-z0-9])?$",
+                "type": "string"
+              },
+              "atMs": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "type": {
+                "const": "editor.focusRange",
+                "type": "string"
+              },
+              "path": {
+                "minLength": 1,
+                "maxLength": 512,
+                "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\).+$",
+                "type": "string"
+              },
+              "range": {
+                "additionalProperties": false,
+                "type": "object",
+                "required": [
+                  "start",
+                  "end"
+                ],
+                "properties": {
+                  "start": {
+                    "additionalProperties": false,
+                    "type": "object",
+                    "required": [
+                      "line",
+                      "column"
+                    ],
+                    "properties": {
+                      "line": {
+                        "minimum": 1,
+                        "type": "integer"
+                      },
+                      "column": {
+                        "minimum": 1,
+                        "type": "integer"
+                      }
+                    }
+                  },
+                  "end": {
+                    "additionalProperties": false,
+                    "type": "object",
+                    "required": [
+                      "line",
+                      "column"
+                    ],
+                    "properties": {
+                      "line": {
+                        "minimum": 1,
+                        "type": "integer"
+                      },
+                      "column": {
+                        "minimum": 1,
+                        "type": "integer"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "additionalProperties": false,
+            "type": "object",
+            "required": [
+              "id",
+              "atMs",
+              "type",
+              "path",
+              "patch"
+            ],
+            "properties": {
+              "id": {
+                "minLength": 1,
+                "maxLength": 80,
+                "pattern": "^[a-z0-9]+(?:[a-z0-9-]*[a-z0-9])?$",
+                "type": "string"
+              },
+              "atMs": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "type": {
+                "const": "demo.patch",
+                "type": "string"
+              },
+              "path": {
+                "minLength": 1,
+                "maxLength": 512,
+                "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\).+$",
+                "type": "string"
+              },
+              "patch": {
+                "minLength": 1,
+                "maxLength": 100000,
+                "type": "string"
+              }
+            }
+          },
+          {
+            "additionalProperties": false,
+            "type": "object",
+            "required": [
+              "id",
+              "atMs",
+              "type",
+              "lines"
+            ],
+            "properties": {
+              "id": {
+                "minLength": 1,
+                "maxLength": 80,
+                "pattern": "^[a-z0-9]+(?:[a-z0-9-]*[a-z0-9])?$",
+                "type": "string"
+              },
+              "atMs": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "type": {
+                "const": "terminal.replay",
+                "type": "string"
+              },
+              "lines": {
+                "maxItems": 2000,
+                "type": "array",
+                "items": {
+                  "maxLength": 2000,
+                  "type": "string"
+                }
+              }
+            }
+          },
+          {
+            "additionalProperties": false,
+            "type": "object",
+            "required": [
+              "id",
+              "atMs",
+              "type",
+              "url"
+            ],
+            "properties": {
+              "id": {
+                "minLength": 1,
+                "maxLength": 80,
+                "pattern": "^[a-z0-9]+(?:[a-z0-9-]*[a-z0-9])?$",
+                "type": "string"
+              },
+              "atMs": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "type": {
+                "const": "preview.show",
+                "type": "string"
+              },
+              "url": {
+                "minLength": 1,
+                "maxLength": 2048,
+                "type": "string"
+              }
+            }
+          },
+          {
+            "additionalProperties": false,
+            "type": "object",
+            "required": [
+              "id",
+              "atMs",
+              "type",
+              "challengeId"
+            ],
+            "properties": {
+              "id": {
+                "minLength": 1,
+                "maxLength": 80,
+                "pattern": "^[a-z0-9]+(?:[a-z0-9-]*[a-z0-9])?$",
+                "type": "string"
+              },
+              "atMs": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "type": {
+                "const": "challenge.start",
+                "type": "string"
+              },
+              "challengeId": {
+                "minLength": 1,
+                "maxLength": 80,
+                "pattern": "^[a-z0-9]+(?:[a-z0-9-]*[a-z0-9])?$",
+                "type": "string"
+              }
+            }
+          },
+          {
+            "additionalProperties": false,
+            "type": "object",
+            "required": [
+              "id",
+              "atMs",
+              "type",
+              "challengeId",
+              "rung"
+            ],
+            "properties": {
+              "id": {
+                "minLength": 1,
+                "maxLength": 80,
+                "pattern": "^[a-z0-9]+(?:[a-z0-9-]*[a-z0-9])?$",
+                "type": "string"
+              },
+              "atMs": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "type": {
+                "const": "challenge.hint",
+                "type": "string"
+              },
+              "challengeId": {
+                "minLength": 1,
+                "maxLength": 80,
+                "pattern": "^[a-z0-9]+(?:[a-z0-9-]*[a-z0-9])?$",
+                "type": "string"
+              },
+              "rung": {
+                "minimum": 1,
+                "maximum": 4,
+                "type": "integer"
+              }
+            }
+          },
+          {
+            "additionalProperties": false,
+            "type": "object",
+            "required": [
+              "id",
+              "atMs",
+              "type",
+              "challengeId"
+            ],
+            "properties": {
+              "id": {
+                "minLength": 1,
+                "maxLength": 80,
+                "pattern": "^[a-z0-9]+(?:[a-z0-9-]*[a-z0-9])?$",
+                "type": "string"
+              },
+              "atMs": {
+                "minimum": 0,
+                "type": "integer"
+              },
+              "type": {
+                "const": "challenge.complete",
+                "type": "string"
+              },
+              "challengeId": {
+                "minLength": 1,
+                "maxLength": 80,
+                "pattern": "^[a-z0-9]+(?:[a-z0-9-]*[a-z0-9])?$",
+                "type": "string"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "challenges": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "instruction",
+          "seam",
+          "hints",
+          "checkCommandId"
+        ],
+        "properties": {
+          "id": {
+            "minLength": 1,
+            "maxLength": 80,
+            "pattern": "^[a-z0-9]+(?:[a-z0-9-]*[a-z0-9])?$",
+            "type": "string"
+          },
+          "title": {
+            "minLength": 1,
+            "maxLength": 120,
+            "type": "string"
+          },
+          "instruction": {
+            "minLength": 1,
+            "maxLength": 2000,
+            "type": "string"
+          },
+          "seam": {
+            "additionalProperties": false,
+            "type": "object",
+            "required": [
+              "path",
+              "startLine",
+              "endLine"
+            ],
+            "properties": {
+              "path": {
+                "minLength": 1,
+                "maxLength": 512,
+                "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\).+$",
+                "type": "string"
+              },
+              "startLine": {
+                "minimum": 1,
+                "type": "integer"
+              },
+              "endLine": {
+                "minimum": 1,
+                "type": "integer"
+              }
+            }
+          },
+          "hints": {
+            "minItems": 1,
+            "maxItems": 4,
+            "type": "array",
+            "items": {
+              "minLength": 1,
+              "maxLength": 600,
+              "type": "string"
+            }
+          },
+          "checkCommandId": {
+            "minLength": 1,
+            "maxLength": 80,
+            "pattern": "^[a-z0-9]+(?:[a-z0-9-]*[a-z0-9])?$",
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
