@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "state-update-draft-001",
+  "outcomes": [
+    "Explain immutable state updates"
+  ],
+  "cues": [
+    {
+      "id": "cue-draft",
+      "spokenText": "Read the current state before changing it.",
+      "events": [
+        {
+          "id": "open-state",
+          "type": "editor.open",
+          "anchorWord": 1,
+          "file": "src/state.ts"
+        },
+        {
+          "id": "challenge-state",
+          "type": "challenge.start",
+          "anchorWord": 5,
+          "challengeId": "state-update",
+          "checkId": "state-update-test"
+        }
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "id": "state-update-test",
+      "kind": "command",
+      "cwd": ".",
+      "command": ["pnpm", "test", "state-update"]
+    }
+  ]
+}
