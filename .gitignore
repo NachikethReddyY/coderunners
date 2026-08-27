@@ -1,0 +1,8 @@
+artifacts/
+.evidence/
+.scratch/
+.turbo/
+node_modules/
+dist/
+coverage/
+.DS_Store
