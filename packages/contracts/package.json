@@ -1,0 +1,32 @@
+{
+  "name": "@coderunners/contracts",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./schemas/codecast-draft.json": "./schemas/codecast-draft.json",
+    "./schemas/codecast-manifest.json": "./schemas/codecast-manifest.json"
+  },
+  "files": [
+    "dist",
+    "schemas"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json && node dist/export-schema.js",
+    "check": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@sinclair/typebox": "catalog:"
+  },
+  "devDependencies": {
+    "@coderunners/fixture-codecast-react": "workspace:*",
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

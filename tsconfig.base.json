@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "composite": false,
+    "declaration": true,
+    "declarationMap": true,
+    "exactOptionalPropertyTypes": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "noUncheckedIndexedAccess": true,
+    "outDir": "dist",
+    "resolveJsonModule": true,
+    "rootDir": "src",
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "ES2023",
+    "verbatimModuleSyntax": true
+  }
+}
+
