@@ -65,3 +65,14 @@
 - [x] Run focused tests, workspace checks/build, and a real loopback HTTP flow.
 - [x] Complete a separate standards/spec review and resolve findings.
 - [x] Record evidence, finish Greenfield state, and commit the branch.
+
+## Studio Player implementation — 2026-08-27
+
+- [x] Confirm the Terra-owned Studio lane, repository boundary, branch, and fixture contract.
+- [x] Record the accepted React habit-toggle tracer and Codecast challenge-loop workflow.
+- [x] Define failing Studio player, browser-boundary, and restore tests.
+- [x] Implement the test-proven timeline reducer and session-aware loopback API client.
+- [x] Build the accessible Astryx-Gothic Studio shell with Monaco, xterm, preview, captions, and hard challenge flow.
+- [x] Verify wide/narrow keyboard flows, hard-gate restore, and the Local Host static-build handoff.
+- [x] Run focused Studio and affected workspace checks; record direct UI evidence.
+- [ ] Complete the connected Local Host browser flow once its origin boundary accepts same-origin GET requests without an `Origin` header (owned by the Local Host lane).
