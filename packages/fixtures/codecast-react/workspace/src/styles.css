@@ -1,0 +1,39 @@
+:root {
+  color: #f7f7f8;
+  background: #09090b;
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  margin: 0;
+}
+
+main {
+  max-width: 34rem;
+  margin: 5rem auto;
+  padding: 0 1.5rem;
+}
+
+p {
+  color: #a1a1aa;
+  margin-bottom: 0.25rem;
+}
+
+h1 {
+  margin-top: 0;
+}
+
+button {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  color: inherit;
+  background: #111113;
+  border: 1px solid #27272a;
+  border-radius: 0.5rem;
+}
+
+strong {
+  color: #60a5fa;
+}

@@ -1,11 +1,26 @@
 import { randomUUID } from "node:crypto";
+import { constants, accessSync } from "node:fs";
 import { realpath } from "node:fs/promises";
-import { isAbsolute, relative, resolve, sep } from "node:path";
+import {
+  delimiter,
+  isAbsolute,
+  join,
+  relative,
+  resolve,
+  sep,
+} from "node:path";
 
 import type { CommandDefinition } from "@coderunners/contracts";
 import * as nodePty from "node-pty";
 
 const MAX_BUFFER_CHARACTERS = 1_000_000;
+const ALLOWED_EXECUTABLES = new Set([
+  "node",
+  "npm",
+  "pnpm",
+  "python3",
+  "uv",
+]);
 
 export type Disposable = { dispose(): void };
 
@@ -37,7 +52,7 @@ export class NodePtyFactory implements PtyFactory {
     args: string[],
     options: PtySpawnOptions,
   ): PtyProcess {
-    return nodePty.spawn(executable, args, {
+    return nodePty.spawn(resolveExecutable(executable), args, {
       cwd: options.cwd,
       cols: options.cols,
       rows: options.rows,
@@ -45,6 +60,30 @@ export class NodePtyFactory implements PtyFactory {
       env: definedEnvironment(),
     });
   }
+}
+
+function resolveExecutable(executable: string): string {
+  if (!ALLOWED_EXECUTABLES.has(executable)) {
+    throw new CommandNotFoundError();
+  }
+  if (executable === "node") {
+    return process.execPath;
+  }
+
+  for (const directory of (process.env.PATH ?? "").split(delimiter)) {
+    if (directory.length === 0) {
+      continue;
+    }
+    const candidate = join(directory, executable);
+    try {
+      accessSync(candidate, constants.X_OK);
+      return candidate;
+    } catch {
+      // Continue through the fixed process PATH; no shell lookup is used.
+    }
+  }
+
+  throw new CommandNotFoundError();
 }
 
 export type CommandApproval = {
@@ -82,12 +121,24 @@ export class PtySessionNotFoundError extends Error {
 
 export class CommandApprovals {
   private readonly approvals = new Map<string, ApprovalRecord>();
+  private commands: Record<string, CommandDefinition>;
 
   constructor(
-    private readonly commands: Record<string, CommandDefinition>,
+    commands: Record<string, CommandDefinition>,
     private readonly idFactory: () => string = randomUUID,
     private readonly now: () => string = () => new Date().toISOString(),
-  ) {}
+  ) {
+    this.commands = structuredClone(commands);
+  }
+
+  get hasCommands(): boolean {
+    return Object.keys(this.commands).length > 0;
+  }
+
+  replaceCommands(commands: Record<string, CommandDefinition>): void {
+    this.commands = structuredClone(commands);
+    this.approvals.clear();
+  }
 
   request(commandId: string): CommandApproval {
     const command = this.commands[commandId];
@@ -125,6 +176,9 @@ export class CommandApprovals {
     if (record.approval.status !== "approved") {
       throw new ApprovalRequiredError();
     }
+    if (record.expiresAt <= Date.parse(this.now())) {
+      throw new ApprovalRequiredError();
+    }
     record.approval.status = "used";
     return structuredClone(record.approval);
   }
@@ -140,7 +194,7 @@ export class CommandApprovals {
   private ensurePending(record: ApprovalRecord): void {
     if (
       record.approval.status !== "pending" ||
-      record.expiresAt < Date.parse(this.now())
+      record.expiresAt <= Date.parse(this.now())
     ) {
       throw new ApprovalRequiredError();
     }

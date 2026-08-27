@@ -14,6 +14,8 @@ export {
   type ProjectFile,
 } from "./project-files.js";
 export {
+  CodexUnavailableError,
+  InvalidDraftResponseError,
   runGenerationJob,
   type LessonAuthor,
   type LessonAuthorRequest,
@@ -21,6 +23,8 @@ export {
 } from "./generation.js";
 export {
   JsonJobStore,
+  JobNotCancellableError,
+  JobNotFoundError,
   type GenerationJob,
   type JobStatus,
 } from "./jobs.js";

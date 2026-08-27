@@ -2,7 +2,7 @@ import { Type, type Static } from "@sinclair/typebox";
 
 import {
   ChallengeSchema,
-  CommandSchema,
+  CommandDefinitionsSchema,
   Identifier,
   Point,
   RelativePath,
@@ -117,10 +117,7 @@ export const CodecastDraftSchema = Type.Object(
       {
         name: Type.String({ minLength: 1, maxLength: 120 }),
         entryFile: RelativePath,
-        commands: Type.Record(Identifier, CommandSchema, {
-          minProperties: 1,
-          maxProperties: 12,
-        }),
+        commands: CommandDefinitionsSchema,
       },
       { additionalProperties: false },
     ),
@@ -145,4 +142,3 @@ export const CodecastDraftSchema = Type.Object(
 
 export type AuthoredLessonEvent = Static<typeof AuthoredLessonEventSchema>;
 export type CodecastDraft = Static<typeof CodecastDraftSchema>;
-

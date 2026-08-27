@@ -144,4 +144,47 @@ describe("Local Host file boundary", () => {
       content: "export const value = 2;\n",
     });
   });
+
+  it("returns stable input and missing-file errors without replacing anything", async () => {
+    const container = await mkdtemp(join(tmpdir(), "coderunners-errors-"));
+    const projectRoot = join(container, "project");
+    await mkdir(projectRoot);
+    const app = createLocalHostApp({
+      allowedOrigin,
+      projectRoot,
+      sessionToken,
+    });
+    cleanups.push(async () => {
+      await app.close();
+      await rm(container, { recursive: true, force: true });
+    });
+
+    const missingBody = await app.inject({
+      method: "PUT",
+      url: "/api/files/content",
+      headers: authHeaders,
+    });
+    expect(missingBody.statusCode).toBe(400);
+    expect(missingBody.json()).toMatchObject({
+      error: { code: "INVALID_PATH" },
+    });
+
+    const deletedFile = await app.inject({
+      method: "PUT",
+      url: "/api/files/content",
+      headers: authHeaders,
+      payload: {
+        path: "deleted.ts",
+        content: "export {};\n",
+        expectedRevision: "missing",
+      },
+    });
+    expect(deletedFile.statusCode).toBe(404);
+    expect(deletedFile.json()).toEqual({
+      error: {
+        code: "FILE_NOT_FOUND",
+        message: "Choose an existing file inside the selected project.",
+      },
+    });
+  });
 });

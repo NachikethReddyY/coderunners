@@ -7,6 +7,7 @@ export type JobStatus =
   | "running"
   | "succeeded"
   | "failed"
+  | "cancelled"
   | "interrupted";
 
 export type GenerationJob = {
@@ -30,6 +31,14 @@ type JobDocument = {
   version: 1;
   jobs: GenerationJob[];
 };
+
+export class JobNotFoundError extends Error {
+  override readonly name = "JobNotFoundError";
+}
+
+export class JobNotCancellableError extends Error {
+  override readonly name = "JobNotCancellableError";
+}
 
 export class JsonJobStore {
   private readonly jobs = new Map<string, GenerationJob>();
@@ -66,7 +75,10 @@ export class JsonJobStore {
     await this.initialize();
     const current = this.jobs.get(id);
     if (current === undefined) {
-      throw new Error(`Unknown job ${id}.`);
+      throw new JobNotFoundError();
+    }
+    if (current.status === "cancelled") {
+      return structuredClone(current);
     }
 
     const next: GenerationJob = {
@@ -79,12 +91,37 @@ export class JsonJobStore {
     return structuredClone(next);
   }
 
+  async cancel(id: string): Promise<GenerationJob> {
+    await this.initialize();
+    const current = this.jobs.get(id);
+    if (current === undefined) {
+      throw new JobNotFoundError();
+    }
+    if (current.status !== "queued" && current.status !== "running") {
+      throw new JobNotCancellableError();
+    }
+    const cancelled: GenerationJob = {
+      ...current,
+      status: "cancelled",
+      phase: "cancelled",
+      updatedAt: this.now(),
+      error: {
+        code: "JOB_CANCELLED",
+        message: "Generation was cancelled. Start a new job when ready.",
+      },
+    };
+    this.jobs.set(id, cancelled);
+    await this.persist();
+    return structuredClone(cancelled);
+  }
+
   private async initialize(): Promise<void> {
     if (this.initialized) {
       return;
     }
 
     await mkdir(this.directory, { recursive: true });
+    let interrupted = false;
     try {
       const document = JSON.parse(
         await readFile(this.filePath, "utf8"),
@@ -103,6 +140,7 @@ export class JsonJobStore {
                 },
               }
             : storedJob;
+        interrupted ||= job.status === "interrupted";
         this.jobs.set(job.id, job);
       }
     } catch (error) {
@@ -111,6 +149,9 @@ export class JsonJobStore {
       }
     }
     this.initialized = true;
+    if (interrupted) {
+      await this.persist();
+    }
   }
 
   private async persist(): Promise<void> {
@@ -145,4 +186,3 @@ export class JsonJobStore {
     return join(this.directory, "jobs.json");
   }
 }
-

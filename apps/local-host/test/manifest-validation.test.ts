@@ -55,5 +55,22 @@ describe("manifest validation API", () => {
         ]),
       },
     });
+
+    const commandApproval = await app.inject({
+      method: "POST",
+      url: "/api/command-approvals",
+      headers: authHeaders,
+      payload: { commandId: "check" },
+    });
+    expect(commandApproval.statusCode).toBe(201);
+    expect(commandApproval.json()).toMatchObject({
+      approval: {
+        commandId: "check",
+        command: {
+          executable: "pnpm",
+          args: ["test", "toggle-habit"],
+        },
+      },
+    });
   });
 });

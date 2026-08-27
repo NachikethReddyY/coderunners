@@ -6,13 +6,17 @@ export {
 } from "./codecast-draft.js";
 export {
   CodecastManifestSchema,
+  CommandDefinitionsSchema,
+  CommandSchema,
   LessonEventSchema,
   type CommandDefinition,
+  type CommandDefinitions,
   type CodecastManifest,
   type LessonEvent,
 } from "./codecast-manifest.js";
 export {
   validateCodecastDraft,
+  validateCommandDefinitions,
   validateCodecastManifest,
   type ContractError,
   type ValidationResult,

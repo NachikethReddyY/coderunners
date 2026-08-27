@@ -12,13 +12,17 @@
   },
   "files": [
     "dist",
+    "audio",
     "draft.json",
+    "expected-states.json",
     "manifest.json",
     "workspace"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "check": "tsc -p tsconfig.json --noEmit",
+    "dev": "pnpm --dir workspace dev",
+    "fixture:audio": "node scripts/generate-audio.mjs",
     "test": "vitest run --passWithNoTests"
   },
   "devDependencies": {

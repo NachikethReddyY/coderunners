@@ -49,7 +49,7 @@
       "path": "src/components/HabitRow.tsx",
       "range": {
         "start": { "line": 12, "column": 3 },
-        "end": { "line": 16, "column": 4 }
+        "end": { "line": 14, "column": 8 }
       }
     },
     {
@@ -79,7 +79,7 @@
       "seam": {
         "path": "src/components/HabitRow.tsx",
         "startLine": 12,
-        "endLine": 16
+        "endLine": 14
       },
       "hints": [
         "Find the state transition triggered by the row click.",

@@ -6,6 +6,10 @@ import type {
   LessonAuthorRequest,
   LessonAuthorResult,
 } from "./generation.js";
+import {
+  CodexUnavailableError,
+  InvalidDraftResponseError,
+} from "./generation.js";
 
 export type CodexThreadPort = {
   readonly id: string | null;
@@ -24,40 +28,48 @@ export class CodexLessonAuthor implements LessonAuthor {
   constructor(private readonly codex: CodexClientPort = new Codex()) {}
 
   async author(request: LessonAuthorRequest): Promise<LessonAuthorResult> {
-    const thread = this.codex.startThread({
-      workingDirectory: request.projectRoot,
-      sandboxMode: "read-only",
-      approvalPolicy: "never",
-      networkAccessEnabled: false,
-      threadSource: "coderunners",
-    });
-    const turn = await thread.run(authorPrompt(request), {
-      outputSchema: CodecastDraftSchema,
-    });
+    try {
+      const thread = this.codex.startThread({
+        workingDirectory: request.projectRoot,
+        sandboxMode: "read-only",
+        approvalPolicy: "never",
+        networkAccessEnabled: false,
+        threadSource: "coderunners",
+      });
+      const turn = await thread.run(authorPrompt(request), {
+        outputSchema: CodecastDraftSchema,
+      });
 
-    if (thread.id === null) {
-      throw new Error("Codex thread did not expose an ID.");
+      if (thread.id === null) {
+        throw new CodexUnavailableError();
+      }
+
+      return {
+        threadId: thread.id,
+        draft: parseDraft(turn.finalResponse),
+      };
+    } catch (error) {
+      throw normalizeCodexError(error);
     }
-
-    return {
-      threadId: thread.id,
-      draft: parseDraft(turn.finalResponse),
-    };
   }
 
   async repair(
     result: LessonAuthorResult,
     errors: ContractError[],
   ): Promise<LessonAuthorResult> {
-    const thread = this.codex.resumeThread(result.threadId);
-    const turn = await thread.run(repairPrompt(errors), {
-      outputSchema: CodecastDraftSchema,
-    });
+    try {
+      const thread = this.codex.resumeThread(result.threadId);
+      const turn = await thread.run(repairPrompt(errors), {
+        outputSchema: CodecastDraftSchema,
+      });
 
-    return {
-      threadId: thread.id ?? result.threadId,
-      draft: parseDraft(turn.finalResponse),
-    };
+      return {
+        threadId: thread.id ?? result.threadId,
+        draft: parseDraft(turn.finalResponse),
+      };
+    } catch (error) {
+      throw normalizeCodexError(error);
+    }
   }
 }
 
@@ -90,6 +102,16 @@ function repairPrompt(errors: ContractError[]): string {
 }
 
 function parseDraft(response: string): unknown {
-  return JSON.parse(response) as unknown;
+  try {
+    return JSON.parse(response) as unknown;
+  } catch {
+    throw new InvalidDraftResponseError();
+  }
 }
 
+function normalizeCodexError(error: unknown): Error {
+  return error instanceof InvalidDraftResponseError ||
+    error instanceof CodexUnavailableError
+    ? error
+    : new CodexUnavailableError();
+}

@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "states": [
+    {
+      "id": "initial",
+      "atMs": 2500,
+      "observable": "HabitRow.tsx is open and Morning walk is shown as Incomplete."
+    },
+    {
+      "id": "learner-edit",
+      "atMs": 15000,
+      "observable": "The learner owns the marked onClick state-transition seam; playback has not edited it."
+    },
+    {
+      "id": "check-passed",
+      "atMs": 55000,
+      "observable": "The focused toggle-habit test exits successfully after an explicitly approved command."
+    },
+    {
+      "id": "preview-changed",
+      "atMs": 65000,
+      "observable": "Clicking Morning walk changes its visible state from Incomplete to Completed."
+    },
+    {
+      "id": "challenge-unlocked",
+      "atMs": 69000,
+      "observable": "The behavioral check unlocks the completed challenge state."
+    }
+  ]
+}

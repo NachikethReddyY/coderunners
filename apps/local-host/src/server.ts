@@ -1,4 +1,6 @@
 import { randomUUID, timingSafeEqual } from "node:crypto";
+import { constants } from "node:fs";
+import { access } from "node:fs/promises";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
@@ -8,6 +10,7 @@ import Fastify, {
 } from "fastify";
 import fastifyStatic from "@fastify/static";
 import {
+  validateCommandDefinitions,
   validateCodecastManifest,
   type CommandDefinition,
 } from "@coderunners/contracts";
@@ -21,7 +24,12 @@ import {
   runGenerationJob,
   type LessonAuthor,
 } from "./generation.js";
-import { JsonJobStore, type GenerationJob } from "./jobs.js";
+import {
+  JobNotCancellableError,
+  JobNotFoundError,
+  JsonJobStore,
+  type GenerationJob,
+} from "./jobs.js";
 import { CodexLessonAuthor } from "./codex-lesson-author.js";
 import {
   ApprovalNotFoundError,
@@ -65,8 +73,15 @@ export function createLocalHostApp(options: LocalHostOptions): FastifyInstance {
     options.projectRoot === undefined
       ? undefined
       : new ProjectFiles(options.projectRoot);
+  const initialCommands = options.commands ?? {};
+  if (options.commands !== undefined) {
+    const commandValidation = validateCommandDefinitions(options.commands);
+    if (!commandValidation.success) {
+      throw new Error("Invalid command definitions supplied to Local Host.");
+    }
+  }
   const approvals = new CommandApprovals(
-    options.commands ?? {},
+    initialCommands,
     options.approvalIdFactory,
     now,
   );
@@ -124,14 +139,17 @@ export function createLocalHostApp(options: LocalHostOptions): FastifyInstance {
     }
   });
 
-  app.get("/api/health", async () => ({
-    status: "ok",
-    capabilities: {
-      codecastGeneration: true,
-      files: true,
-      pty: true,
-    },
-  }));
+  app.get("/api/health", async () => {
+    const projectReady = await projectIsReadable(options.projectRoot);
+    return {
+      status: "ok",
+      capabilities: {
+        codecastGeneration: projectReady,
+        files: projectReady,
+        pty: projectReady && approvals.hasCommands,
+      },
+    };
+  });
 
   app.get("/api/files/content", async (request, reply) => {
     if (projectFiles === undefined) {
@@ -157,12 +175,10 @@ export function createLocalHostApp(options: LocalHostOptions): FastifyInstance {
 
       const code = (error as NodeJS.ErrnoException).code;
       if (code === "ENOENT") {
-        return reply.code(404).send({
-          error: {
-            code: "FILE_NOT_FOUND",
-            message: "Choose an existing file inside the selected project.",
-          },
-        });
+        return fileNotFound(reply);
+      }
+      if (code === "EACCES" || code === "EPERM") {
+        return filePermissionRequired(reply);
       }
 
       throw error;
@@ -179,7 +195,7 @@ export function createLocalHostApp(options: LocalHostOptions): FastifyInstance {
       });
     }
 
-    const body = request.body as {
+    const body = (request.body ?? {}) as {
       path?: unknown;
       content?: unknown;
       expectedRevision?: unknown;
@@ -212,6 +228,14 @@ export function createLocalHostApp(options: LocalHostOptions): FastifyInstance {
         return invalidPath(reply);
       }
 
+      const code = (error as NodeJS.ErrnoException).code;
+      if (code === "ENOENT") {
+        return fileNotFound(reply);
+      }
+      if (code === "EACCES" || code === "EPERM") {
+        return filePermissionRequired(reply);
+      }
+
       throw error;
     }
   });
@@ -227,6 +251,7 @@ export function createLocalHostApp(options: LocalHostOptions): FastifyInstance {
         },
       });
     }
+    approvals.replaceCommands(validation.data.project.commands);
     return { valid: true, manifest: validation.data };
   });
 
@@ -239,7 +264,7 @@ export function createLocalHostApp(options: LocalHostOptions): FastifyInstance {
         },
       });
     }
-    const body = request.body as {
+    const body = (request.body ?? {}) as {
       goal?: unknown;
       diagnosticAnswers?: unknown;
     };
@@ -270,7 +295,17 @@ export function createLocalHostApp(options: LocalHostOptions): FastifyInstance {
       createdAt: timestamp,
       updatedAt: timestamp,
     };
-    await jobs.create(job);
+    try {
+      await jobs.create(job);
+    } catch {
+      return reply.code(503).send({
+        error: {
+          code: "JOB_STORAGE_FAILED",
+          message:
+            "Generation state could not be stored. Check local storage access, then retry.",
+        },
+      });
+    }
 
     const generationRequest = {
       projectRoot: options.projectRoot,
@@ -283,6 +318,9 @@ export function createLocalHostApp(options: LocalHostOptions): FastifyInstance {
         jobs,
         lessonAuthor,
         request: generationRequest,
+      }).catch(() => {
+        // NOTE: A storage outage may prevent terminal failure persistence.
+        // Keep the loopback host alive so the Studio can expose recovery.
       });
     });
 
@@ -301,6 +339,31 @@ export function createLocalHostApp(options: LocalHostOptions): FastifyInstance {
       });
     }
     return { job };
+  });
+
+  app.post("/api/jobs/:jobId/cancel", async (request, reply) => {
+    const { jobId } = request.params as { jobId: string };
+    try {
+      return { job: await jobs.cancel(jobId) };
+    } catch (error) {
+      if (error instanceof JobNotFoundError) {
+        return reply.code(404).send({
+          error: {
+            code: "JOB_NOT_FOUND",
+            message: "Start the job again.",
+          },
+        });
+      }
+      if (error instanceof JobNotCancellableError) {
+        return reply.code(409).send({
+          error: {
+            code: "JOB_NOT_CANCELLABLE",
+            message: "This job has already finished.",
+          },
+        });
+      }
+      throw error;
+    }
   });
 
   app.post("/api/command-approvals", async (request, reply) => {
@@ -391,7 +454,12 @@ export function createLocalHostApp(options: LocalHostOptions): FastifyInstance {
       ) {
         return approvalRequired(reply);
       }
-      throw error;
+      return reply.code(503).send({
+        error: {
+          code: "PTY_FAILED",
+          message: "The command could not start. Review it and try again.",
+        },
+      });
     }
   });
 
@@ -505,6 +573,38 @@ function invalidPath(reply: FastifyReply) {
       message: "Choose a file inside the selected project.",
     },
   });
+}
+
+function fileNotFound(reply: FastifyReply) {
+  return reply.code(404).send({
+    error: {
+      code: "FILE_NOT_FOUND",
+      message: "Choose an existing file inside the selected project.",
+    },
+  });
+}
+
+function filePermissionRequired(reply: FastifyReply) {
+  return reply.code(403).send({
+    error: {
+      code: "FILE_PERMISSION_REQUIRED",
+      message: "Restore project access, then try again.",
+    },
+  });
+}
+
+async function projectIsReadable(
+  projectRoot: string | undefined,
+): Promise<boolean> {
+  if (projectRoot === undefined) {
+    return false;
+  }
+  try {
+    await access(projectRoot, constants.R_OK);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 function tokensMatch(supplied: string, expected: string): boolean {

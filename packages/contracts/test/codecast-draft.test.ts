@@ -30,5 +30,76 @@ describe("authored Codecast draft contract", () => {
       ],
     });
   });
-});
 
+  it("resolves anchor phrases and rejects protected-seam demo patches", async () => {
+    const rawDraft = await readFile(new URL("draft.json", fixtureRoot), "utf8");
+    const draft = JSON.parse(rawDraft) as {
+      challenges: Array<{ seam: { path: string } }>;
+      events: Array<Record<string, unknown> & {
+        anchor: { cueId: string; phrase: string; occurrence: number };
+      }>;
+    };
+
+    const missingPhrase = structuredClone(draft);
+    missingPhrase.events[0]!.anchor.phrase = "words absent from the cue";
+    expect(validateCodecastDraft(missingPhrase)).toMatchObject({
+      success: false,
+      errors: [
+        {
+          path: "/events/0/anchor/phrase",
+          message: "Event anchor phrase and occurrence must resolve inside its cue.",
+        },
+      ],
+    });
+
+    const missingOccurrence = structuredClone(draft);
+    missingOccurrence.events[0]!.anchor.occurrence = 2;
+    expect(validateCodecastDraft(missingOccurrence)).toMatchObject({
+      success: false,
+      errors: [
+        {
+          path: "/events/0/anchor/occurrence",
+          message: "Event anchor phrase and occurrence must resolve inside its cue.",
+        },
+      ],
+    });
+
+    const leakedSolution = structuredClone(draft);
+    leakedSolution.events.push({
+      id: "solve-the-seam",
+      type: "demo.patch",
+      anchor: {
+        cueId: "challenge",
+        phrase: "Implement the toggle",
+        occurrence: 1,
+      },
+      path: leakedSolution.challenges[0]!.seam.path,
+      patch: "+ onToggle(!completed)",
+    });
+    expect(validateCodecastDraft(leakedSolution)).toMatchObject({
+      success: false,
+      errors: expect.arrayContaining([
+        {
+          path: `/events/${leakedSolution.events.length - 1}/path`,
+          message: "Demo patches must not target a protected learner seam.",
+        },
+      ]),
+    });
+
+    const directAnswer = structuredClone(draft);
+    directAnswer.challenges[0] = {
+      ...directAnswer.challenges[0]!,
+      hints: ["Call onToggle(!completed)."],
+    } as never;
+    expect(validateCodecastDraft(directAnswer)).toMatchObject({
+      success: false,
+      errors: expect.arrayContaining([
+        {
+          path: "/challenges/0/hints/0",
+          message:
+            "Challenge guidance must be prose and must not contain solution code.",
+        },
+      ]),
+    });
+  });
+});

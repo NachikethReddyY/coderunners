@@ -29,9 +29,9 @@ describe("Local Host browser boundary", () => {
     expect(connected.json()).toEqual({
       status: "ok",
       capabilities: {
-        codecastGeneration: true,
-        files: true,
-        pty: true,
+        codecastGeneration: false,
+        files: false,
+        pty: false,
       },
     });
     expect(connected.headers["content-security-policy"]).toBe(
@@ -70,6 +70,36 @@ describe("Local Host browser boundary", () => {
       error: {
         code: "INVALID_SESSION",
         message: "Reopen CodeRunners from the local launcher.",
+      },
+    });
+  });
+
+  it("reports only capabilities backed by the selected project and commands", async () => {
+    const app = createLocalHostApp({
+      allowedOrigin,
+      commands: {
+        check: { executable: "node", args: ["--version"] },
+      },
+      projectRoot: process.cwd(),
+      sessionToken,
+    });
+    apps.push(app);
+
+    const response = await app.inject({
+      method: "GET",
+      url: "/api/health",
+      headers: {
+        origin: allowedOrigin,
+        "x-coderunners-session": sessionToken,
+      },
+    });
+
+    expect(response.json()).toEqual({
+      status: "ok",
+      capabilities: {
+        codecastGeneration: true,
+        files: true,
+        pty: true,
       },
     });
   });

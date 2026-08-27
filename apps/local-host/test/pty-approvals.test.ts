@@ -184,6 +184,125 @@ describe("reviewed PTY commands", () => {
       },
     });
   });
+
+  it("never starts an expired approval or an invalid runtime command", async () => {
+    const container = await mkdtemp(join(tmpdir(), "coderunners-expired-"));
+    const projectRoot = join(container, "project");
+    await mkdir(projectRoot);
+    let clock = "2026-08-27T07:30:00.000Z";
+    let spawnCount = 0;
+    const ptyFactory: PtyFactory = {
+      spawn() {
+        spawnCount += 1;
+        return new FakePty();
+      },
+    };
+    const app = createLocalHostApp({
+      allowedOrigin,
+      approvalIdFactory: () => "approval-expired",
+      commands: {
+        check: { executable: "node", args: ["--version"] },
+      },
+      now: () => clock,
+      projectRoot,
+      ptyFactory,
+      sessionToken,
+    });
+    cleanups.push(async () => {
+      await app.close();
+      await rm(container, { recursive: true, force: true });
+    });
+
+    await app.inject({
+      method: "POST",
+      url: "/api/command-approvals",
+      headers: authHeaders,
+      payload: { commandId: "check" },
+    });
+    await app.inject({
+      method: "POST",
+      url: "/api/command-approvals/approval-expired/confirm",
+      headers: authHeaders,
+      payload: { approved: true },
+    });
+    clock = "2026-08-27T07:36:00.000Z";
+
+    const expired = await app.inject({
+      method: "POST",
+      url: "/api/pty/sessions",
+      headers: authHeaders,
+      payload: { approvalId: "approval-expired" },
+    });
+    expect(expired.statusCode).toBe(409);
+    expect(expired.json()).toMatchObject({
+      error: { code: "APPROVAL_REQUIRED" },
+    });
+    expect(spawnCount).toBe(0);
+
+    expect(() =>
+      createLocalHostApp({
+        allowedOrigin,
+        commands: {
+          unsafe: {
+            executable: "sh",
+            args: ["-c", "echo unsafe"],
+          },
+        } as never,
+        sessionToken,
+      }),
+    ).toThrow("Invalid command definitions");
+  });
+
+  it("returns a stable execution error when the PTY cannot start", async () => {
+    const container = await mkdtemp(join(tmpdir(), "coderunners-pty-fail-"));
+    const projectRoot = join(container, "project");
+    await mkdir(projectRoot);
+    const app = createLocalHostApp({
+      allowedOrigin,
+      approvalIdFactory: () => "approval-fail",
+      commands: {
+        check: { executable: "node", args: ["--version"] },
+      },
+      projectRoot,
+      ptyFactory: {
+        spawn() {
+          throw new Error("native helper unavailable");
+        },
+      },
+      sessionToken,
+    });
+    cleanups.push(async () => {
+      await app.close();
+      await rm(container, { recursive: true, force: true });
+    });
+
+    await app.inject({
+      method: "POST",
+      url: "/api/command-approvals",
+      headers: authHeaders,
+      payload: { commandId: "check" },
+    });
+    await app.inject({
+      method: "POST",
+      url: "/api/command-approvals/approval-fail/confirm",
+      headers: authHeaders,
+      payload: { approved: true },
+    });
+    const response = await app.inject({
+      method: "POST",
+      url: "/api/pty/sessions",
+      headers: authHeaders,
+      payload: { approvalId: "approval-fail" },
+    });
+
+    expect(response.statusCode).toBe(503);
+    expect(response.json()).toEqual({
+      error: {
+        code: "PTY_FAILED",
+        message: "The command could not start. Review it and try again.",
+      },
+    });
+  });
 });
 
 class FakePty implements PtyProcess {

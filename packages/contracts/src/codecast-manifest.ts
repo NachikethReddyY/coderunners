@@ -126,6 +126,11 @@ export const CommandSchema = Type.Object(
   { additionalProperties: false },
 );
 
+export const CommandDefinitionsSchema = Type.Record(Identifier, CommandSchema, {
+  minProperties: 1,
+  maxProperties: 12,
+});
+
 export const ChallengeSchema = Type.Object(
   {
     id: Identifier,
@@ -157,10 +162,7 @@ export const CodecastManifestSchema = Type.Object(
       {
         name: Type.String({ minLength: 1, maxLength: 120 }),
         entryFile: RelativePath,
-        commands: Type.Record(Identifier, CommandSchema, {
-          minProperties: 1,
-          maxProperties: 12,
-        }),
+        commands: CommandDefinitionsSchema,
       },
       { additionalProperties: false },
     ),
@@ -195,4 +197,5 @@ export const CodecastManifestSchema = Type.Object(
 
 export type CodecastManifest = Static<typeof CodecastManifestSchema>;
 export type CommandDefinition = Static<typeof CommandSchema>;
+export type CommandDefinitions = Static<typeof CommandDefinitionsSchema>;
 export type LessonEvent = Static<typeof LessonEventSchema>;

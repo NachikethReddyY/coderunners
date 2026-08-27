@@ -12,6 +12,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "check": "tsc -p tsconfig.json --noEmit",
+    "postinstall": "node scripts/ensure-node-pty-helper.mjs",
     "start": "node dist/cli.js",
     "test": "vitest run"
   },
