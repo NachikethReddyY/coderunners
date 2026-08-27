@@ -32,22 +32,22 @@
 - [x] Inventory every CodeRunners worktree, branch, commit, and uncommitted change.
 - [x] Map the worktrees to the accepted research plan and identify missing lanes.
 - [x] Ignore generated local state and commit the conformance lane's meaningful files.
-- [ ] Preserve and commit the contracts lane's meaningful planning state without `.scratch` artifacts.
-- [ ] Run focused Studio checks and commit the Studio lane.
-- [ ] Re-run focused Local Host and workspace checks before integration.
-- [ ] Create local `main` from `origin/main` and merge conformance, contracts planning, Local Host, and Studio in dependency order.
-- [ ] Resolve integration conflicts without dropping branch-owned behavior or planning records.
-- [ ] Run conformance, workspace, and direct browser verification on integrated `main`.
-- [ ] Prove every integrated branch is an ancestor of `main` and record the absent media-worker lane.
+- [x] Preserve and commit the contracts lane's meaningful planning state without `.scratch` artifacts.
+- [x] Run focused Studio checks and commit the Studio lane.
+- [x] Re-run focused Local Host and workspace checks before integration.
+- [x] Create local `main` from `origin/main` and merge conformance, contracts planning, Local Host, and Studio in dependency order.
+- [x] Resolve integration conflicts without dropping branch-owned behavior or planning records.
+- [x] Run conformance, workspace, and direct browser verification on integrated `main`; record the failures below.
+- [x] Prove every integrated branch is an ancestor of `main` and record the absent media-worker lane.
 
 ## 2026-08-27 — CodeRunners tracer contracts lane
 
 - [x] Confirm the React habit-toggle tracer.
 - [x] Rename this worktree to `wt/contracts`.
-- [ ] Define the lesson-manifest contract and hand-authored golden fixture.
-- [ ] Write failing conformance tests for the hard challenge gate and playback isolation.
+- [x] Define the lesson-manifest contract and hand-authored golden fixture.
+- [x] Write failing conformance tests for the hard challenge gate and playback isolation.
 - [x] Cache and verify the local TTS and timing models for the Media lane.
-- [ ] Implement the contract package and focused player tracer behavior.
+- [x] Implement the contract package and focused player tracer behavior.
 - [ ] Validate the locked-seek, proof-unlock, restart-restore, and learner-file isolation flow.
 
 ## Local Host implementation — 2026-08-27
@@ -76,3 +76,12 @@
 - [x] Verify wide/narrow keyboard flows, hard-gate restore, and the Local Host static-build handoff.
 - [x] Run focused Studio and affected workspace checks; record direct UI evidence.
 - [ ] Complete the connected Local Host browser flow once its origin boundary accepts same-origin GET requests without an `Origin` header (owned by the Local Host lane).
+
+## 2026-08-27 — Integration blockers found
+
+- [ ] Accept authenticated same-origin browser GET requests that omit `Origin`, while retaining the strict origin check where browsers send the header.
+- [ ] Serve a CSP compatible with Monaco's required inline layout styles without weakening the script boundary.
+- [ ] Move the pure player into the planned `@coderunners/lesson-player` package and make Studio consume it.
+- [ ] Implement the missing `services/media` lane and add `services/*` to the pnpm workspace.
+- [ ] Wire the root conformance command and make its public package imports resolvable from the standalone runner.
+- [ ] Re-run all 22 conformance checks and the connected browser challenge flow after these blockers are resolved.
