@@ -1,8 +1,8 @@
 node_modules/
 dist/
 .turbo/
+.scratch/
 coverage/
 .evidence/
 artifacts/
 .DS_Store
-

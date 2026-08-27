@@ -4,6 +4,7 @@ packages:
   - "packages/fixtures/*"
 
 allowBuilds:
+  '@astryxdesign/core': true
   esbuild: true
   node-pty: true
 
