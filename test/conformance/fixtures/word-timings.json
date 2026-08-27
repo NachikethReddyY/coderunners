@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "durationMs": 4000,
+  "alignmentConfidence": 0.99,
+  "words": [
+    {
+    "cueId": "cue-intro",
+    "wordIndex": 0,
+    "startMs": 100,
+    "endMs": 250
+    },
+    {
+    "cueId": "cue-intro",
+    "wordIndex": 1,
+    "startMs": 500,
+    "endMs": 650
+    },
+    {
+    "cueId": "cue-intro",
+    "wordIndex": 2,
+    "startMs": 900,
+    "endMs": 1050
+    },
+    {
+    "cueId": "cue-intro",
+    "wordIndex": 3,
+    "startMs": 1300,
+    "endMs": 1450
+    },
+    {
+    "cueId": "cue-challenge",
+    "wordIndex": 0,
+    "startMs": 2100,
+    "endMs": 2250
+    },
+    {
+    "cueId": "cue-challenge",
+    "wordIndex": 1,
+    "startMs": 2400,
+    "endMs": 2550
+    },
+    {
+    "cueId": "cue-challenge",
+    "wordIndex": 2,
+    "startMs": 2700,
+    "endMs": 2850
+    },
+    {
+    "cueId": "cue-challenge",
+    "wordIndex": 3,
+    "startMs": 3100,
+    "endMs": 3250
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "lessonId": "state-update-001",
+  "outcomes": [
+    "Explain immutable state updates"
+  ],
+  "audio": {
+    "format": "wav",
+    "durationMs": 4000,
+    "path": "media/codecast.wav"
+  },
+  "cues": [
+    {
+      "id": "cue-intro",
+      "spokenText": "Now find the habit by id and read its current state.",
+      "events": [
+        {
+          "id": "chapter-intro",
+          "type": "chapter",
+          "anchorWord": 1,
+          "chapterId": "intro"
+        },
+        {
+          "id": "open-app",
+          "type": "editor.open",
+          "anchorWord": 2,
+          "file": "src/state.ts"
+        },
+        {
+          "id": "focus-state",
+          "type": "editor.focusRange",
+          "anchorWord": 3,
+          "file": "src/state.ts",
+          "startLine": 7,
+          "endLine": 7
+        }
+      ]
+    },
+    {
+      "id": "cue-challenge",
+      "spokenText": "Now implement the immutable state update.",
+      "events": [
+        {
+          "id": "challenge-toggle",
+          "type": "challenge.start",
+          "anchorWord": 3,
+          "challengeId": "toggle-habit",
+          "checkId": "toggle-habit-test"
+        }
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "id": "toggle-habit-test",
+      "kind": "command",
+      "cwd": ".",
+      "command": ["pnpm", "test", "state-update"]
+    }
+  ]
+}
