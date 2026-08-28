@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=78"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "coderunners-voice-clone"
+version = "0.1.0"
+description = "Local reference-audio voice-clone sidecar for CodeRunners"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+  "mlx-audio @ git+https://github.com/Blaizzy/mlx-audio.git@5522a2241129505e2ba5966d6572ce4962b766c4",
+  "numpy>=1.26,<2",
+  "setuptools>=78",
+]
+
+[project.scripts]
+coderunners-voice-clone = "coderunners_voice_clone.worker:main"

@@ -1,0 +1,10 @@
+{
+  "name": "@coderunners/media",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "uv run --frozen coderunners-media --check",
+    "check": "uv run --frozen ruff check src tests",
+    "test": "uv run --frozen python -m unittest discover -s tests -v"
+  }
+}

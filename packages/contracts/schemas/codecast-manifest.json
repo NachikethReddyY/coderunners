@@ -318,6 +318,7 @@
             "required": [
               "id",
               "atMs",
+              "endMs",
               "type",
               "path",
               "patch"
@@ -331,6 +332,10 @@
               },
               "atMs": {
                 "minimum": 0,
+                "type": "integer"
+              },
+              "endMs": {
+                "minimum": 1,
                 "type": "integer"
               },
               "type": {

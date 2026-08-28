@@ -1,6 +1,6 @@
 import { randomUUID, timingSafeEqual } from "node:crypto";
 import { constants } from "node:fs";
-import { access } from "node:fs/promises";
+import { access, readFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
@@ -13,6 +13,7 @@ import {
   validateCommandDefinitions,
   validateCodecastManifest,
   type CommandDefinition,
+  type CodecastManifest,
 } from "@coderunners/contracts";
 
 import {
@@ -44,12 +45,13 @@ import {
 } from "./pty.js";
 
 const CONTENT_SECURITY_POLICY =
-  "default-src 'self'; base-uri 'none'; frame-ancestors 'none'; object-src 'none'";
+  "default-src 'self'; base-uri 'none'; frame-ancestors 'none'; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'";
 
 export type LocalHostOptions = {
   allowedOrigin: string;
   approvalIdFactory?: () => string;
   commands?: Record<string, CommandDefinition>;
+  codecastDirectory?: string;
   dataDirectory?: string;
   jobIdFactory?: () => string;
   lessonAuthor?: LessonAuthor;
@@ -101,6 +103,20 @@ export function createLocalHostApp(options: LocalHostOptions): FastifyInstance {
     });
   }
 
+  if (options.codecastDirectory !== undefined) {
+    void app.register(fastifyStatic, {
+      decorateReply: false,
+      prefix: "/codecast/",
+      root: options.codecastDirectory,
+    });
+  }
+
+  app.get("/lesson-config.js", async (_request, reply) => {
+    const selectedLesson = await readSelectedLesson(options.codecastDirectory);
+    reply.type("application/javascript; charset=utf-8");
+    return `window.__CODERUNNERS_LESSON__=${JSON.stringify(selectedLesson)};`;
+  });
+
   app.addHook("onClose", async () => {
     ptySessions?.closeAll();
   });
@@ -116,7 +132,9 @@ export function createLocalHostApp(options: LocalHostOptions): FastifyInstance {
       return;
     }
 
-    if (request.headers.origin !== options.allowedOrigin) {
+    const origin = request.headers.origin;
+    const isOriginlessSafeRead = origin === undefined && request.method === "GET";
+    if (origin !== options.allowedOrigin && !isOriginlessSafeRead) {
       return reply.code(403).send({
         error: {
           code: "ORIGIN_REJECTED",
@@ -181,6 +199,38 @@ export function createLocalHostApp(options: LocalHostOptions): FastifyInstance {
         return filePermissionRequired(reply);
       }
 
+      throw error;
+    }
+  });
+
+  app.get("/api/files/directory", async (request, reply) => {
+    if (projectFiles === undefined) {
+      return reply.code(409).send({
+        error: {
+          code: "PROJECT_REQUIRED",
+          message: "Select the project again.",
+        },
+      });
+    }
+
+    const { path } = request.query as { path?: unknown };
+    if (typeof path !== "string") {
+      return invalidPath(reply);
+    }
+
+    try {
+      return await projectFiles.list(path);
+    } catch (error) {
+      if (error instanceof InvalidProjectPathError) {
+        return invalidPath(reply);
+      }
+      const code = (error as NodeJS.ErrnoException).code;
+      if (code === "ENOENT") {
+        return fileNotFound(reply);
+      }
+      if (code === "EACCES" || code === "EPERM") {
+        return filePermissionRequired(reply);
+      }
       throw error;
     }
   });
@@ -542,6 +592,26 @@ export function createLocalHostApp(options: LocalHostOptions): FastifyInstance {
   });
 
   return app;
+}
+
+async function readSelectedLesson(
+  codecastDirectory: string | undefined,
+): Promise<{ audioUrl: string; manifest: CodecastManifest } | undefined> {
+  if (codecastDirectory === undefined) {
+    return undefined;
+  }
+
+  const rawManifest = await readFile(join(codecastDirectory, "manifest.json"), "utf8");
+  const parsedManifest = JSON.parse(rawManifest) as unknown;
+  const validation = validateCodecastManifest(parsedManifest);
+  if (!validation.success) {
+    throw new Error("The selected Codecast manifest is invalid.");
+  }
+
+  return {
+    audioUrl: `/codecast/${validation.data.audio.src}`,
+    manifest: validation.data,
+  };
 }
 
 function approvalRequired(reply: FastifyReply) {

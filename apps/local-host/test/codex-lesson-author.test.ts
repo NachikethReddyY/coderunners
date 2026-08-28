@@ -1,6 +1,5 @@
 import { readFile } from "node:fs/promises";
 
-import { CodecastDraftSchema } from "@coderunners/contracts";
 import { fixtureRoot } from "@coderunners/fixture-codecast-react";
 import { describe, expect, it } from "vitest";
 
@@ -50,10 +49,38 @@ describe("Codex lesson author adapter", () => {
       networkAccessEnabled: false,
       threadSource: "coderunners",
     });
-    expect(calls.turnOptions).toEqual({ outputSchema: CodecastDraftSchema });
+    expect(calls.turnOptions).toBeUndefined();
     expect(calls.input).toContain(
       "Teach the state transition in a habit toggle.",
     );
     expect(calls.input).toContain("I am new to callbacks.");
+    expect(calls.input).toContain("Direct-demo coach");
+    expect(calls.input).toContain("one clear outcome");
+    expect(calls.input).toContain("not make the script a narration of every token");
+  });
+
+  it("keeps the underlying Codex failure available for local diagnosis", async () => {
+    const rootCause = new Error("Codex CLI could not start");
+    const codex: CodexClientPort = {
+      startThread() {
+        return {
+          id: null,
+          async run() {
+            throw rootCause;
+          },
+        };
+      },
+      resumeThread() {
+        throw new Error("not used");
+      },
+    };
+
+    await expect(
+      new CodexLessonAuthor(codex).author({
+        projectRoot: "/tmp/habit-tracker",
+        goal: "Teach React props.",
+        diagnosticAnswers: [],
+      }),
+    ).rejects.toHaveProperty("cause", rootCause);
   });
 });

@@ -77,6 +77,59 @@ describe("Local Host file boundary", () => {
     }
   });
 
+  it("lists real project directories lazily without following symlink escapes", async () => {
+    const container = await mkdtemp(join(tmpdir(), "coderunners-tree-"));
+    const projectRoot = join(container, "project");
+    const outsideRoot = join(container, "outside");
+    await mkdir(join(projectRoot, "src/components"), { recursive: true });
+    await mkdir(outsideRoot);
+    await writeFile(join(projectRoot, "package.json"), "{}\n", "utf8");
+    await writeFile(join(projectRoot, "src/index.ts"), "export {};\n", "utf8");
+    await symlink(outsideRoot, join(projectRoot, "linked-outside"));
+
+    const app = createLocalHostApp({ allowedOrigin, projectRoot, sessionToken });
+    cleanups.push(async () => {
+      await app.close();
+      await rm(container, { recursive: true, force: true });
+    });
+
+    const root = await app.inject({
+      method: "GET",
+      url: "/api/files/directory?path=",
+      headers: authHeaders,
+    });
+    expect(root.statusCode).toBe(200);
+    expect(root.json()).toEqual({
+      path: "",
+      entries: [
+        { kind: "directory", name: "src", path: "src" },
+        { kind: "symlink", name: "linked-outside", path: "linked-outside" },
+        { kind: "file", name: "package.json", path: "package.json" },
+      ],
+    });
+
+    const nested = await app.inject({
+      method: "GET",
+      url: "/api/files/directory?path=src",
+      headers: authHeaders,
+    });
+    expect(nested.json()).toEqual({
+      path: "src",
+      entries: [
+        { kind: "directory", name: "components", path: "src/components" },
+        { kind: "file", name: "index.ts", path: "src/index.ts" },
+      ],
+    });
+
+    const escaped = await app.inject({
+      method: "GET",
+      url: "/api/files/directory?path=..%2Foutside",
+      headers: authHeaders,
+    });
+    expect(escaped.statusCode).toBe(400);
+    expect(escaped.json()).toMatchObject({ error: { code: "INVALID_PATH" } });
+  });
+
   it("writes learner edits only at the expected file revision", async () => {
     const container = await mkdtemp(join(tmpdir(), "coderunners-write-"));
     const projectRoot = join(container, "project");

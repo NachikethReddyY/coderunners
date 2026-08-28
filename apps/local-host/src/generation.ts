@@ -27,8 +27,8 @@ export type LessonAuthor = {
 export class CodexUnavailableError extends Error {
   override readonly name = "CodexUnavailableError";
 
-  constructor() {
-    super("Codex is unavailable.");
+  constructor(cause?: unknown) {
+    super("Codex is unavailable.", { cause });
   }
 }
 

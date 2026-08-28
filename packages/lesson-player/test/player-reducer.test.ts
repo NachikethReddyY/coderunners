@@ -7,7 +7,7 @@ import {
   playerReducer,
   restorePlayerState,
   serializePlayerState,
-} from "../src/player-reducer.js";
+} from "../src/index.js";
 
 const manifest = {
   id: "react-habit-toggle",
@@ -38,6 +38,31 @@ describe("Codecast player state", () => {
     expect(resumedSeek.timeMs).toBe(60_000);
   });
 
+  it("clears an unresolved challenge when seeking back before its marker", () => {
+    const challenged = playerReducer(
+      createInitialPlayerState(manifest),
+      { type: "clock.updated", timeMs: 15_000 },
+      manifest,
+    );
+
+    const rewound = playerReducer(
+      challenged,
+      { type: "seek.requested", timeMs: 8_000 },
+      manifest,
+    );
+
+    expect(rewound.timeMs).toBe(8_000);
+    expect(rewound.activeChallengeId).toBeUndefined();
+    expect(rewound.forwardSeekLocked).toBe(false);
+
+    const challengedAgain = playerReducer(
+      rewound,
+      { type: "clock.updated", timeMs: 15_000 },
+      manifest,
+    );
+    expect(challengedAgain.activeChallengeId).toBe("toggle-habit");
+  });
+
   it("pauses on the first learner mutation and restores an incomplete challenge", () => {
     const challenged = playerReducer(
       createInitialPlayerState(manifest),
@@ -49,5 +74,17 @@ describe("Codecast player state", () => {
 
     expect(edited.playback).toBe("paused");
     expect(restored).toEqual(edited);
+  });
+
+  it("starts a new local session from the initial lesson state", () => {
+    const challenged = playerReducer(
+      createInitialPlayerState(manifest),
+      { type: "clock.updated", timeMs: 15_000 },
+      manifest,
+    );
+
+    expect(playerReducer(challenged, { type: "session.reset" }, manifest)).toEqual(
+      createInitialPlayerState(manifest),
+    );
   });
 });

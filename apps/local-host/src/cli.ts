@@ -3,12 +3,13 @@ import { resolve } from "node:path";
 
 import { startLocalHost } from "./launcher.js";
 
-const { port, projectRoot, studioDirectory } = parseArguments(
+const { codecastDirectory, port, projectRoot, studioDirectory } = parseArguments(
   process.argv.slice(2),
 );
 const host = await startLocalHost({
   port,
   projectRoot,
+  ...(codecastDirectory === undefined ? {} : { codecastDirectory }),
   ...(studioDirectory === undefined ? {} : { studioDirectory }),
 });
 const launchUrl = `${host.origin}/#session=${encodeURIComponent(host.sessionToken)}`;
@@ -28,11 +29,13 @@ for (const signal of ["SIGINT", "SIGTERM"] as const) {
 }
 
 function parseArguments(args: string[]): {
+  codecastDirectory?: string;
   port: number;
   projectRoot: string;
   studioDirectory?: string;
 } {
   let port = 43110;
+  let codecastDirectory: string | undefined;
   let projectRoot = process.cwd();
   let studioDirectory: string | undefined;
 
@@ -52,6 +55,13 @@ function parseArguments(args: string[]): {
       }
       projectRoot = resolve(value);
       index += 1;
+    } else if (argument === "--codecast-directory") {
+      const value = args[index + 1];
+      if (value === undefined) {
+        throw new Error("--codecast-directory requires a path.");
+      }
+      codecastDirectory = resolve(value);
+      index += 1;
     } else if (argument === "--studio-directory") {
       const value = args[index + 1];
       if (value === undefined) {
@@ -65,6 +75,7 @@ function parseArguments(args: string[]): {
   }
 
   return {
+    ...(codecastDirectory === undefined ? {} : { codecastDirectory }),
     port,
     projectRoot,
     ...(studioDirectory === undefined ? {} : { studioDirectory }),

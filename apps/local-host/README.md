@@ -6,12 +6,13 @@ The Local Host is the privileged boundary between the browser Studio and the lea
 
 ```sh
 pnpm --filter @coderunners/local-host build
-pnpm --filter @coderunners/local-host start -- \
+pnpm --filter @coderunners/local-host start \
   --project-root /absolute/path/to/project \
+  --codecast-directory /absolute/path/to/codecast \
   --studio-directory /absolute/path/to/apps/studio/dist
 ```
 
-The CLI opens the supplied Studio build on macOS. Without a Studio directory it starts the API only and prints the loopback origin.
+`--codecast-directory` is optional. When supplied, Studio uses that directory's `manifest.json` and audio instead of the built-in fixture. The CLI opens the supplied Studio build on macOS. Without a Studio directory it starts the API only and prints the loopback origin.
 
 ## Browser boundary
 
@@ -27,7 +28,7 @@ Main routes:
 - `GET /api/health`
 - `POST /api/codecasts/validate`
 - `POST /api/codecasts/generate`, `GET /api/jobs/:jobId`, and `POST /api/jobs/:jobId/cancel`
-- `GET|PUT /api/files/content`
+- `GET /api/files/directory` and `GET|PUT /api/files/content`
 - `POST /api/command-approvals` and `POST /api/command-approvals/:id/confirm`
 - `POST /api/pty/sessions`, plus typed output, input, resize, and stop routes
 

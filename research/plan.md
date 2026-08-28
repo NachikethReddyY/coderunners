@@ -43,7 +43,7 @@ Scores are evidence statuses, not benchmark results. “Sample” counts the dir
 5. Receive outcome-based feedback and progressively stronger hints. Continue only after a focused test, DOM assertion, console result, or program output passes.
 6. Resume the Codecast, finish the project, teach the concept back, and attempt one small transfer variation.
 
-The unresolved first tracer choice is the smallest Codecast that proves the entire chain. A 5–8 minute React habit toggle remains recommended because one state change exercises generation, audio timing, editor mutation, PTY checks, a visible web preview, challenge unlock, and restore without requiring a broad curriculum.
+The accepted first tracer is a 5–8 minute React habit toggle because one state change exercises generation, audio timing, editor mutation, PTY checks, a visible web preview, challenge unlock, and restore without requiring a broad curriculum.
 
 ## Why SDK, not ACP or app-server
 

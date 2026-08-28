@@ -11,6 +11,7 @@ import {
 const Anchor = Type.Object(
   {
     cueId: Identifier,
+    edge: Type.Optional(Type.Union([Type.Literal("start"), Type.Literal("end")])),
     phrase: Type.String({ minLength: 1, maxLength: 240 }),
     occurrence: Type.Integer({ minimum: 1, maximum: 20 }),
   },

@@ -1,0 +1,2 @@
+[console_scripts]
+coderunners-media = coderunners_media.worker:main

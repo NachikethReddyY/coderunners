@@ -1,5 +1,6 @@
 import { createHash, randomUUID } from "node:crypto";
 import {
+  readdir,
   readFile,
   realpath,
   rename,
@@ -7,7 +8,7 @@ import {
   unlink,
   writeFile,
 } from "node:fs/promises";
-import { dirname, isAbsolute, relative, resolve, sep } from "node:path";
+import { dirname, isAbsolute, posix, relative, resolve, sep } from "node:path";
 
 const MAX_FILE_BYTES = 1_000_000;
 
@@ -25,10 +26,47 @@ export type ProjectFile = {
   revision: string;
 };
 
+export type ProjectDirectoryEntry = {
+  kind: "directory" | "file" | "symlink";
+  name: string;
+  path: string;
+};
+
+export type ProjectDirectory = {
+  entries: ProjectDirectoryEntry[];
+  path: string;
+};
+
 export class ProjectFiles {
   private readonly writeQueues = new Map<string, Promise<void>>();
 
   constructor(private readonly projectRoot: string) {}
+
+  async list(path: string): Promise<ProjectDirectory> {
+    const absolutePath = await this.resolveExisting(path, true);
+    const directoryStat = await stat(absolutePath);
+    if (!directoryStat.isDirectory()) {
+      throw new InvalidProjectPathError();
+    }
+
+    const entries = (await readdir(absolutePath, { withFileTypes: true }))
+      .map((entry): ProjectDirectoryEntry => ({
+        kind: entry.isSymbolicLink()
+          ? "symlink"
+          : entry.isDirectory()
+            ? "directory"
+            : "file",
+        name: entry.name,
+        path: path.length === 0 ? entry.name : posix.join(path, entry.name),
+      }))
+      .sort((left, right) => {
+        const kindOrder = { directory: 0, symlink: 1, file: 2 } as const;
+        return kindOrder[left.kind] - kindOrder[right.kind]
+          || left.name.localeCompare(right.name, undefined, { sensitivity: "base" });
+      });
+
+    return { entries, path };
+  }
 
   async read(path: string): Promise<ProjectFile> {
     const absolutePath = await this.resolveExisting(path);
@@ -101,9 +139,9 @@ export class ProjectFiles {
     }
   }
 
-  private async resolveExisting(path: string): Promise<string> {
+  private async resolveExisting(path: string, allowRoot = false): Promise<string> {
     if (
-      path.length === 0 ||
+      (!allowRoot && path.length === 0) ||
       path.includes("\0") ||
       path.includes("\\") ||
       isAbsolute(path)

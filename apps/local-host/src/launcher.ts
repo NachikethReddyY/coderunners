@@ -49,6 +49,9 @@ export async function startLocalHost(
       ? {}
       : { approvalIdFactory: options.approvalIdFactory }),
     ...(options.commands === undefined ? {} : { commands: options.commands }),
+    ...(options.codecastDirectory === undefined
+      ? {}
+      : { codecastDirectory: options.codecastDirectory }),
     ...(options.ptyFactory === undefined
       ? {}
       : { ptyFactory: options.ptyFactory }),

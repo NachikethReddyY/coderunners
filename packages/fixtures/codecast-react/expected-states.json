@@ -2,29 +2,29 @@
   "schemaVersion": 1,
   "states": [
     {
-      "id": "initial",
-      "atMs": 2500,
-      "observable": "HabitRow.tsx is open and Morning walk is shown as Incomplete."
+      "id": "intro",
+      "atMs": 1000,
+      "observable": "The read-only demo projection opens while the narration introduces a typed function."
     },
     {
-      "id": "learner-edit",
-      "atMs": 15000,
-      "observable": "The learner owns the marked onClick state-transition seam; playback has not edited it."
+      "id": "projected-typing",
+      "atMs": 30000,
+      "observable": "The demo source grows in timed steps without mutating the learner file."
+    },
+    {
+      "id": "challenge-reset",
+      "atMs": 112020,
+      "observable": "At the checkpoint, playback freezes and the unsolved live file replaces the demo."
     },
     {
       "id": "check-passed",
-      "atMs": 55000,
-      "observable": "The focused toggle-habit test exits successfully after an explicitly approved command."
+      "atMs": 112020,
+      "observable": "The focused formatHabitLabel test exits successfully after explicit approval."
     },
     {
-      "id": "preview-changed",
-      "atMs": 65000,
-      "observable": "Clicking Morning walk changes its visible state from Incomplete to Completed."
-    },
-    {
-      "id": "challenge-unlocked",
-      "atMs": 69000,
-      "observable": "The behavioral check unlocks the completed challenge state."
+      "id": "next-lesson",
+      "atMs": 113000,
+      "observable": "The check unlocks playback and the ending previews the React props lesson."
     }
   ]
 }

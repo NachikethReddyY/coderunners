@@ -1,0 +1,8 @@
+Metadata-Version: 2.4
+Name: coderunners-voice-clone
+Version: 0.1.0
+Summary: Local reference-audio voice-clone sidecar for CodeRunners
+Requires-Python: <3.12,>=3.11
+Requires-Dist: mlx-audio @ git+https://github.com/Blaizzy/mlx-audio.git@5522a2241129505e2ba5966d6572ce4962b766c4
+Requires-Dist: numpy<2,>=1.26
+Requires-Dist: setuptools>=78

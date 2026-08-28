@@ -165,6 +165,18 @@
                     "pattern": "^[a-z0-9]+(?:[a-z0-9-]*[a-z0-9])?$",
                     "type": "string"
                   },
+                  "edge": {
+                    "anyOf": [
+                      {
+                        "const": "start",
+                        "type": "string"
+                      },
+                      {
+                        "const": "end",
+                        "type": "string"
+                      }
+                    ]
+                  },
                   "phrase": {
                     "minLength": 1,
                     "maxLength": 240,
@@ -218,6 +230,18 @@
                     "maxLength": 80,
                     "pattern": "^[a-z0-9]+(?:[a-z0-9-]*[a-z0-9])?$",
                     "type": "string"
+                  },
+                  "edge": {
+                    "anyOf": [
+                      {
+                        "const": "start",
+                        "type": "string"
+                      },
+                      {
+                        "const": "end",
+                        "type": "string"
+                      }
+                    ]
                   },
                   "phrase": {
                     "minLength": 1,
@@ -274,6 +298,18 @@
                     "maxLength": 80,
                     "pattern": "^[a-z0-9]+(?:[a-z0-9-]*[a-z0-9])?$",
                     "type": "string"
+                  },
+                  "edge": {
+                    "anyOf": [
+                      {
+                        "const": "start",
+                        "type": "string"
+                      },
+                      {
+                        "const": "end",
+                        "type": "string"
+                      }
+                    ]
                   },
                   "phrase": {
                     "minLength": 1,
@@ -377,6 +413,18 @@
                     "pattern": "^[a-z0-9]+(?:[a-z0-9-]*[a-z0-9])?$",
                     "type": "string"
                   },
+                  "edge": {
+                    "anyOf": [
+                      {
+                        "const": "start",
+                        "type": "string"
+                      },
+                      {
+                        "const": "end",
+                        "type": "string"
+                      }
+                    ]
+                  },
                   "phrase": {
                     "minLength": 1,
                     "maxLength": 240,
@@ -437,6 +485,18 @@
                     "pattern": "^[a-z0-9]+(?:[a-z0-9-]*[a-z0-9])?$",
                     "type": "string"
                   },
+                  "edge": {
+                    "anyOf": [
+                      {
+                        "const": "start",
+                        "type": "string"
+                      },
+                      {
+                        "const": "end",
+                        "type": "string"
+                      }
+                    ]
+                  },
                   "phrase": {
                     "minLength": 1,
                     "maxLength": 240,
@@ -494,6 +554,18 @@
                     "pattern": "^[a-z0-9]+(?:[a-z0-9-]*[a-z0-9])?$",
                     "type": "string"
                   },
+                  "edge": {
+                    "anyOf": [
+                      {
+                        "const": "start",
+                        "type": "string"
+                      },
+                      {
+                        "const": "end",
+                        "type": "string"
+                      }
+                    ]
+                  },
                   "phrase": {
                     "minLength": 1,
                     "maxLength": 240,
@@ -547,6 +619,18 @@
                     "maxLength": 80,
                     "pattern": "^[a-z0-9]+(?:[a-z0-9-]*[a-z0-9])?$",
                     "type": "string"
+                  },
+                  "edge": {
+                    "anyOf": [
+                      {
+                        "const": "start",
+                        "type": "string"
+                      },
+                      {
+                        "const": "end",
+                        "type": "string"
+                      }
+                    ]
                   },
                   "phrase": {
                     "minLength": 1,
@@ -603,6 +687,18 @@
                     "maxLength": 80,
                     "pattern": "^[a-z0-9]+(?:[a-z0-9-]*[a-z0-9])?$",
                     "type": "string"
+                  },
+                  "edge": {
+                    "anyOf": [
+                      {
+                        "const": "start",
+                        "type": "string"
+                      },
+                      {
+                        "const": "end",
+                        "type": "string"
+                      }
+                    ]
                   },
                   "phrase": {
                     "minLength": 1,
@@ -663,6 +759,18 @@
                     "maxLength": 80,
                     "pattern": "^[a-z0-9]+(?:[a-z0-9-]*[a-z0-9])?$",
                     "type": "string"
+                  },
+                  "edge": {
+                    "anyOf": [
+                      {
+                        "const": "start",
+                        "type": "string"
+                      },
+                      {
+                        "const": "end",
+                        "type": "string"
+                      }
+                    ]
                   },
                   "phrase": {
                     "minLength": 1,

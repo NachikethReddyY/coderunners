@@ -6,11 +6,14 @@
     "node": ">=20"
   },
   "devDependencies": {
+    "@coderunners/contracts": "workspace:*",
+    "@coderunners/local-host": "workspace:*",
     "turbo": "catalog:"
   },
   "scripts": {
     "build": "turbo run build",
     "check": "turbo run check",
-    "test": "turbo run test"
+    "test": "turbo run test --filter=!coderunners-react-habit-toggle",
+    "test:conformance": "sh test/conformance/run.sh"
   }
 }

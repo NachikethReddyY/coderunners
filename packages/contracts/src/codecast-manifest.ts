@@ -58,6 +58,7 @@ export const LessonEventSchema = Type.Union(
     Type.Object(
       {
         ...TimedEventBase,
+        endMs: Type.Integer({ minimum: 1 }),
         type: Type.Literal("demo.patch"),
         path: RelativePath,
         patch: Type.String({ minLength: 1, maxLength: 100_000 }),

@@ -1,0 +1,2 @@
+[console_scripts]
+coderunners-voice-clone = coderunners_voice_clone.worker:main

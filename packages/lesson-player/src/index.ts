@@ -20,6 +20,7 @@ export type PlayerAction =
   | { type: "playback.paused" }
   | { type: "proof.succeeded"; challengeId: string }
   | { type: "seek.requested"; timeMs: number }
+  | { type: "session.reset" }
   | { type: "terminal.append"; output: string }
   | { type: "terminal.updated"; output: string };
 
@@ -79,8 +80,19 @@ export function playerReducer(
       if (nextTimeMs > state.timeMs && state.forwardSeekLocked) {
         return state;
       }
+      if (nextTimeMs < state.timeMs && state.forwardSeekLocked) {
+        return {
+          ...state,
+          activeChallengeId: undefined,
+          forwardSeekLocked: false,
+          playback: "paused",
+          timeMs: nextTimeMs,
+        };
+      }
       return moveToTime({ ...state, timeMs: nextTimeMs }, nextTimeMs, manifest);
     }
+    case "session.reset":
+      return createInitialPlayerState(manifest);
     case "terminal.updated":
       return { ...state, terminalOutput: action.output.slice(-20_000) };
     case "terminal.append":

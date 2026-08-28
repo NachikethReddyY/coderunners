@@ -35,7 +35,7 @@ describe("Local Host browser boundary", () => {
       },
     });
     expect(connected.headers["content-security-policy"]).toBe(
-      "default-src 'self'; base-uri 'none'; frame-ancestors 'none'; object-src 'none'",
+      "default-src 'self'; base-uri 'none'; frame-ancestors 'none'; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'",
     );
     expect(connected.headers["cache-control"]).toBe("no-store");
 
@@ -69,6 +69,32 @@ describe("Local Host browser boundary", () => {
     expect(invalidSession.json()).toEqual({
       error: {
         code: "INVALID_SESSION",
+        message: "Reopen CodeRunners from the local launcher.",
+      },
+    });
+  });
+
+  it("accepts authenticated same-origin GETs without Origin but rejects mutations", async () => {
+    const app = createLocalHostApp({ allowedOrigin, sessionToken });
+    apps.push(app);
+
+    const browserGet = await app.inject({
+      method: "GET",
+      url: "/api/health",
+      headers: { "x-coderunners-session": sessionToken },
+    });
+    expect(browserGet.statusCode).toBe(200);
+
+    const originlessMutation = await app.inject({
+      method: "POST",
+      url: "/api/codecasts/validate",
+      headers: { "x-coderunners-session": sessionToken },
+      payload: {},
+    });
+    expect(originlessMutation.statusCode).toBe(403);
+    expect(originlessMutation.json()).toEqual({
+      error: {
+        code: "ORIGIN_REJECTED",
         message: "Reopen CodeRunners from the local launcher.",
       },
     });

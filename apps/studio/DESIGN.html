@@ -1,22 +1,108 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>CodeRunners Studio design system</title>
   <style>
-    :root { color-scheme: dark; --canvas:#05070B; --surface:#0A0F16; --surface-raised:#111A25; --border-subtle:#233244; --text-primary:#F4F7FB; --text-muted:#98A6B8; --accent:#27D7FF; --accent-soft:#0A3140; --success:#25D08A; --warning:#F3C85E; --danger:#F56B79; --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-6:24px; --shadow-overlay:0 20px 56px rgb(0 0 0 / .42); --font-ui:Inter,ui-sans-serif,system-ui,sans-serif; --font-code:"SFMono-Regular",Consolas,"Liberation Mono",monospace; }
-    * { box-sizing:border-box; } body { margin:0; background:var(--canvas); color:var(--text-primary); font:14px/20px var(--font-ui); } main { max-width:1160px; margin:auto; padding:40px 24px 72px; } header { border-bottom:1px solid var(--border-subtle); padding-bottom:24px; } .kicker, .meta { color:var(--text-muted); font-size:12px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; } h1 { font-size:28px; line-height:34px; margin:6px 0; } h2 { margin:40px 0 12px; font-size:20px; } h3 { font-size:16px; margin:0 0 8px; } p { color:var(--text-muted); margin:0; max-width:68ch; } .grid { display:grid; gap:var(--space-4); grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); margin-top:var(--space-4); } .sample, .panel { border:1px solid var(--border-subtle); background:var(--surface); padding:var(--space-4); } .swatch { height:66px; margin-bottom:8px; border:1px solid rgb(255 255 255 / .12); } .canvas{background:var(--canvas)} .surface{background:var(--surface)} .raised{background:var(--surface-raised)} .accent{background:var(--accent)} .success{background:var(--success)} .warning{background:var(--warning)} .danger{background:var(--danger)} code { font:12px/18px var(--font-code); color:var(--text-primary); } .type-meta { font-size:12px;line-height:16px;font-weight:600; } .type-body { font-size:14px;line-height:20px; } .type-panel { font-size:16px;line-height:22px;font-weight:600; } .type-title { font-size:20px;line-height:26px;font-weight:700; } .studio { display:grid; grid-template-columns:224px minmax(320px,1fr) 336px; min-height:420px; overflow:hidden; } .studio > * { border-right:1px solid var(--border-subtle); } .studio > :last-child { border-right:0; } .tool { display:flex; align-items:center; gap:8px; padding:10px 12px; border-bottom:1px solid var(--border-subtle); } .tool strong { font-size:13px; } .file { padding:8px 12px; background:var(--accent-soft); color:var(--text-primary); border-left:2px solid var(--accent); } .editor { padding:20px; color:#B9D8E8; white-space:pre; font:13px/21px var(--font-code); } .focus-line { display:block; margin:0 -8px; padding:0 8px; background:var(--accent-soft); border-left:2px solid var(--accent); } .terminal { align-self:end; margin:0 12px 12px; padding:12px; background:#030508; border:1px solid var(--border-subtle); color:#B3C2CE; font:12px/18px var(--font-code); } .caption { padding:12px; background:var(--surface-raised); border-top:1px solid var(--border-subtle); } .caption strong { color:var(--accent); } button { min-height:36px; padding:0 12px; color:var(--text-primary); background:transparent; border:1px solid var(--border-subtle); border-radius:6px; font:600 13px var(--font-ui); } button.primary { color:#001116; background:var(--accent); border-color:var(--accent); } button:focus-visible, a:focus-visible { outline:2px solid var(--accent); outline-offset:2px; } .state { display:flex; gap:8px; align-items:center; margin-top:8px; } .dot { width:9px;height:9px;border-radius:50%;background:var(--warning); } .dot.success { background:var(--success); } .dot.danger { background:var(--danger); } .overlay { box-shadow:var(--shadow-overlay); background:var(--surface-raised); border-radius:8px; } @media (max-width:900px){ .studio { grid-template-columns:190px minmax(0,1fr); } .studio .preview { display:none; } } @media (max-width:640px){ main{padding:24px 16px 48px}.studio{grid-template-columns:1fr}.studio .explorer{display:none}.editor{min-height:240px}.type-title{font-size:18px;line-height:24px} } @media (prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}} 
+    :root { color-scheme:dark; --canvas:#030303; --editor:#0a0a0a; --challenge:#161616; --border:#1a1a1a; --text:#fff; --muted:#9a9a9a; --accent:#0a96ff; --success:#36d982; --warning:#d7ef21; --danger:#ff5f6d; --ui:Inter,ui-sans-serif,system-ui,sans-serif; --code:"SFMono-Regular",Consolas,monospace; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--canvas); color:var(--text); font:13px/1.5 var(--ui); }
+    button,input,select { font:inherit; }
+    button { color:inherit; border:1px solid var(--border); background:transparent; }
+    main { max-width:1180px; margin:auto; padding:36px 24px 72px; }
+    header { padding-bottom:22px; border-bottom:1px solid var(--border); }
+    h1 { margin:4px 0; font-size:28px; }
+    h2 { margin:38px 0 12px; font-size:19px; }
+    h3,p { margin:0; }
+    p { max-width:70ch; color:var(--muted); }
+    code { color:#ddd; font:12px/18px var(--code); }
+    .meta { color:var(--muted); font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; }
+    .sample,.panel { border:1px solid var(--border); background:var(--canvas); padding:14px; }
+    .swatch { height:56px; margin-bottom:8px; border:1px solid var(--border); }
+    .canvas { background:var(--canvas); } .editor-color { background:var(--editor); } .challenge-color { background:var(--challenge); } .border-color { background:var(--border); } .text-color { background:var(--text); } .accent-color { background:var(--accent); }
+    .studio { display:grid; min-height:500px; grid-template-rows:44px 1fr; overflow:hidden; padding:0; }
+    .lesson-bar { display:flex; align-items:center; gap:12px; padding:0 12px; border-bottom:1px solid var(--border); }
+    .lesson-bar strong { font-size:13px; }
+    .status { display:flex; align-items:center; gap:6px; color:#c8c8c8; font-size:11px; }
+    .dot { width:7px; height:7px; border-radius:50%; background:var(--warning); }
+    .lesson-actions { display:flex; gap:6px; margin-left:auto; }
+    .lesson-actions button { height:30px; border-color:transparent; border-radius:5px; padding:0 9px; }
+    .workbench { position:relative; display:grid; grid-template-columns:240px minmax(0,1fr); min-height:0; }
+    .explorer { border-right:1px solid var(--border); }
+    .explorer-head,.file-bar { height:34px; display:flex; align-items:center; border-bottom:1px solid var(--border); padding:0 10px; font-size:11px; font-weight:650; }
+    .tree { padding:6px 0; }
+    .tree div { height:28px; display:flex; align-items:center; gap:7px; padding:0 10px; }
+    .tree .active { border-left:2px solid var(--accent); background:#111922; }
+    .file-icon { display:grid; width:18px; height:18px; place-items:center; border-radius:2px; background:#3da9f5; color:#030303; font:800 8px/1 var(--code); }
+    .workspace { display:grid; min-width:0; grid-template-rows:34px minmax(0,1fr) 62px; background:var(--editor); }
+    .file-bar { justify-content:space-between; background:var(--canvas); }
+    .file-tools { display:flex; align-items:center; gap:10px; color:#bbb; }
+    .run { border-radius:4px; padding:3px 8px; color:#ddd; } .run b { color:var(--success); }
+    .code { padding:20px; color:#d8dee9; white-space:pre; font:13px/21px var(--code); }
+    .caret { display:inline-block; width:2px; height:17px; margin-left:1px; vertical-align:-3px; background:#fff; animation:caret 800ms steps(1,end) infinite; }
+    @keyframes caret { 0%,48%{opacity:1}49%,100%{opacity:.18} }
+    .focus { background:#12344a; }
+    .player { display:grid; grid-template-columns:30px minmax(0,1fr) 76px 48px auto; align-items:center; gap:12px; padding:0 12px; border-top:1px solid var(--border); background:var(--canvas); }
+    .play { width:28px; height:28px; border:0; border-radius:50%; background:#777; color:#030303; }
+    .track { position:relative; height:2px; background:linear-gradient(90deg,var(--accent) 0 76%,#262626 76%); }
+    .track::after { position:absolute; top:50%; left:76%; width:6px; height:6px; border-radius:50%; background:var(--warning); content:""; transform:translate(-50%,-50%); }
+    .speed { height:26px; border:1px solid var(--border); border-radius:4px; background:var(--canvas); color:#ddd; }
+    .volume { display:flex; align-items:center; gap:6px; color:#999; font-size:12px; }
+    .volume span { display:block; width:54px; height:2px; background:linear-gradient(90deg,#aaa 0 100%,#262626 100%); }
+    .gate { position:absolute; right:16px; bottom:78px; width:min(440px,calc(100% - 32px)); display:grid; gap:16px; border:1px solid var(--border); border-radius:14px; background:var(--challenge); padding:16px; box-shadow:0 20px 50px rgb(0 0 0 / 48%); }
+    .gate-copy { display:flex; gap:12px; }
+    .lock { display:grid; width:34px; height:34px; flex:0 0 34px; place-items:center; border:1px solid var(--accent); border-radius:50%; color:var(--accent); }
+    .gate h3 { margin:2px 0 3px; font-size:16px; }
+    .gate-actions { display:flex; justify-content:flex-end; gap:7px; }
+    .gate-actions button { min-height:34px; border-radius:4px; padding:0 10px; }
+    .gate-actions .primary { border-color:var(--accent); background:var(--accent); color:#030303; }
+    .editor-specimen { position:relative; min-height:360px; overflow:hidden; background:var(--editor); padding:28px 24px; }
+    .editor-code { color:#d8dee9; white-space:pre; font:14px/22px var(--code); }
+    .syntax-keyword { color:#ff7ab2; font-weight:700; } .syntax-identifier { color:#82aaff; } .syntax-type { color:#2fd8f2; } .syntax-string { color:#a8f0cf; } .syntax-comment { color:#687386; font-style:italic; }
+    .hover { position:absolute; top:74px; left:min(25%,180px); width:min(540px,calc(100% - 48px)); border:1px solid #2d4b70; border-radius:10px; background:#06090d; padding:14px 16px; box-shadow:0 18px 48px rgb(0 0 0 / 55%); }
+    .hover h3 { margin:0 0 8px; font-size:20px; line-height:26px; } .hover p { max-width:none; margin:7px 0 0; color:#e6edf7; } .hover hr { height:1px; margin:12px 0; border:0; background:#1d2a38; } .hover pre { margin:8px 0 0; overflow:auto; background:#030508; padding:10px 12px; color:#d8dee9; font:13px/21px var(--code); }
+    .flow { display:grid; grid-template-columns:repeat(5,1fr); gap:1px; border:1px solid var(--border); background:var(--border); }
+    .flow div { min-height:86px; background:var(--canvas); padding:14px; }
+    .flow strong { display:block; margin-bottom:4px; }
+    @media (prefers-reduced-motion:reduce) { .caret{animation:none} }
+    @media (max-width:700px) { main{padding:24px 14px 48px}.workbench{grid-template-columns:1fr;grid-template-rows:170px 1fr}.explorer{border-right:0;border-bottom:1px solid var(--border)}.flow{grid-template-columns:1fr 1fr} }
   </style>
 </head>
 <body>
   <main>
-    <header><div class="kicker">Accepted system · 2026-08-27</div><h1>CodeRunners Studio</h1><p>A focused local coding studio for a learner’s observe → act → prove → resume loop. The artifact reflects `DESIGN.md`, `src/studio.css`, and the real Studio regions.</p></header>
-    <section><h2>Color roles and ownership</h2><div class="grid"><div class="sample"><div class="swatch canvas"></div><code>--canvas #05070B</code><p>Application canvas.</p></div><div class="sample"><div class="swatch surface"></div><code>--surface #0A0F16</code><p>Editor and terminal panels.</p></div><div class="sample"><div class="swatch raised"></div><code>--surface-raised #111A25</code><p>Review and preview layers.</p></div><div class="sample"><div class="swatch accent"></div><code>--accent #27D7FF</code><p>Primary action, focus, current timeline.</p></div><div class="sample"><div class="swatch success"></div><code>--success #25D08A</code><p>Verified proof only.</p></div><div class="sample"><div class="swatch warning"></div><code>--warning #F3C85E</code><p>Held challenge and review.</p></div><div class="sample"><div class="swatch danger"></div><code>--danger #F56B79</code><p>Failure and recovery.</p></div></div></section>
-    <section><h2>Typography and spacing</h2><div class="panel"><div class="type-meta">Meta · 12 / 16 / 600</div><div class="type-body">Caption and body · 14 / 20 / 400</div><div class="type-panel">Panel heading · 16 / 22 / 600</div><div class="type-title">Build a habit toggle · 20 / 26 / 700</div><code>Spacing: 4 · 8 · 12 · 16 · 24px</code></div></section>
-    <section><h2>Studio shell: wide and constrained behavior</h2><div class="studio panel"><aside class="explorer"><div class="tool"><strong>Explorer</strong></div><div class="file">src/components/HabitRow.tsx</div></aside><section><div class="tool"><strong>HabitRow.tsx</strong><span class="meta">Learner-owned seam</span></div><div class="editor">12 <span class="focus-line">onClick={() =&gt; onToggle(!completed)}</span>13 &lt;strong&gt;{completed ? "Completed" : "Incomplete"}&lt;/strong&gt;</div><div class="terminal">$ pnpm test toggle-habit<br>Challenge check waiting for your implementation…</div><div class="caption"><strong>00:15</strong> Implement the immutable update, then prove it.</div></section><aside class="preview"><div class="tool"><strong>Preview</strong></div><div class="panel"><h3>Today’s habits</h3><p>Morning walk · Incomplete</p></div></aside></div><p class="meta" style="margin-top:8px">At ≤900px Preview becomes a labelled disclosure; at ≤640px Explorer is also disclosed. The editor, caption, primary controls, and hard gate remain in order.</p></section>
-    <section><h2>Components, states, and feedback</h2><div class="grid"><div class="panel"><h3>Player</h3><button class="primary">Play Codecast</button><div class="state"><span class="dot"></span><span>Challenge locked — proof required</span></div></div><div class="panel"><h3>Command review</h3><p><code>pnpm test toggle-habit</code></p><div class="state"><button>Cancel</button><button class="primary">Run check</button></div></div><div class="panel overlay"><h3>Verified proof</h3><div class="state"><span class="dot success"></span><span>Check passed — next segment unlocked</span></div></div><div class="panel"><h3>Host unavailable</h3><div class="state"><span class="dot danger"></span><span>Restart the local host; browser work remains here.</span></div></div></div></section>
-    <section><h2>Accessibility commitments</h2><p>All controls retain native roles, visible cyan focus, and keyboard routes. Caption and status regions provide non-audio/non-color feedback. Motion is removed under reduced motion. At 360px and 200% zoom, labelled disclosures replace lost panes; they do not remove task state or the hard-gate route.</p></section>
+    <header><div class="meta">Accepted system · 2026-08-28</div><h1>CodeRunners Studio</h1><p>An editor-first local learning studio with real files, stitched narration, STT-derived events, a proof gate, and a compact session route.</p></header>
+
+    <section><h2>Exact surface roles</h2><div class="grid">
+      <div class="sample"><div class="swatch canvas"></div><code>#030303</code><p>All persistent chrome.</p></div>
+      <div class="sample"><div class="swatch editor-color"></div><code>#0A0A0A</code><p>Code editor only.</p></div>
+      <div class="sample"><div class="swatch challenge-color"></div><code>#161616</code><p>Checkpoint notification only.</p></div>
+      <div class="sample"><div class="swatch border-color"></div><code>#1A1A1A · 1px</code><p>All persistent borders.</p></div>
+      <div class="sample"><div class="swatch text-color"></div><code>#FFFFFF</code><p>Primary text.</p></div>
+      <div class="sample"><div class="swatch accent-color"></div><code>#0A96FF</code><p>Focus, progress, next action.</p></div>
+    </div></section>
+
+    <section><h2>Workbench composition</h2><div class="studio panel">
+      <nav class="lesson-bar"><span class="meta">Lesson</span><strong>Build a typed function⌄</strong><span class="status"><span class="dot"></span>Learning</span><div class="lesson-actions"><button>▣ Preview</button><button>＋ New session</button></div></nav>
+      <div class="workbench"><aside class="explorer"><div class="explorer-head">⌄ HABIT-TRACKER</div><div class="tree"><div>⌄ 📂 src</div><div>　⌁ formatHabitLabel.test.ts</div><div class="active">　<span class="file-icon">TS</span>formatHabitLabel.ts</div></div></aside>
+        <section class="workspace"><div class="file-bar"><span><span class="file-icon" style="display:inline-grid;vertical-align:middle;margin-right:6px">TS</span>formatHabitLabel.demo.ts　<span class="meta">Demo</span></span><span class="file-tools"><button class="run"><b>▶</b> Run</button>Save　Terminal</span></div><div class="code">1  export function <span class="focus">formatHabitLabel</span><span class="caret" aria-hidden="true"></span></div><div class="player"><button class="play">▶</button><div class="track"></div><div class="volume" aria-label="Full playback volume">◖<span></span></div><select class="speed" aria-label="Playback speed"><option>1×</option></select><code>0:20 / 2:05</code></div></section>
+        <aside class="gate"><div class="gate-copy"><span class="lock">▣</span><div><span class="meta">Checkpoint</span><h3>Recreate the function</h3><p>Build the typed function so a habit name becomes a label beginning with Habit, a colon, and one space.</p></div></div><div class="gate-actions"><button>Show hint</button><button class="primary">Run check</button></div></aside>
+      </div>
+    </div></section>
+
+    <section><h2>Editor language and hover</h2><div class="editor-specimen panel"><div class="editor-code"><span class="syntax-keyword">export class</span> <span class="syntax-type">HabitLabel</span> <span class="syntax-keyword">extends</span> <span class="syntax-type">String</span> {
+  <span class="syntax-identifier">format</span>(<span class="syntax-identifier">name</span>: <span class="syntax-keyword">string</span>) {
+    <span class="syntax-comment">// Pointer hover or Monaco's keyboard hover action.</span>
+    <span class="syntax-keyword">return</span> <span class="syntax-string">`Habit: ${name}`</span>;
+  }
+}</div><aside class="hover" role="tooltip"><h3>✨ class</h3><p><strong>ES6 feature · Declaration</strong></p><p>Declares a class with a constructor, methods, accessors, and static members.</p><hr><strong>Syntax</strong><pre><span class="syntax-keyword">class</span> <span class="syntax-type">Name</span> {
+  <span class="syntax-identifier">constructor</span>() {}
+  <span class="syntax-identifier">method</span>() {}
+  <span class="syntax-keyword">static</span> <span class="syntax-identifier">staticMethod</span>() {}
+}</pre></aside></div></section>
+
+    <section><h2>Lesson and timing flow</h2><div class="flow"><div><strong>1 · Explain</strong><p>Introduce the function contract at 1× without writing code early.</p></div><div><strong>2 · Type</strong><p>Animate each patch across its exact STT phrase interval; keep the caret through narration gaps.</p></div><div><strong>3 · Recreate</strong><p>The demo resets to the real unsolved learner file at the single challenge dot.</p></div><div><strong>4 · Check + continue</strong><p>The STT instruction end owns the hard stop; passing resumes the final cue.</p></div><div><strong>5 · Next</strong><p>End by previewing the following React props lesson.</p></div></div></section>
   </main>
 </body>
 </html>

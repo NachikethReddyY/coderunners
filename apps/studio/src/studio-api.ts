@@ -15,6 +15,17 @@ export type ProjectFile = {
   revision: string;
 };
 
+export type ProjectDirectoryEntry = {
+  kind: "directory" | "file" | "symlink";
+  name: string;
+  path: string;
+};
+
+export type ProjectDirectory = {
+  entries: ProjectDirectoryEntry[];
+  path: string;
+};
+
 export type CommandApproval = {
   command: { args: string[]; cwd: string; executable: string };
   commandId: string;
@@ -95,6 +106,10 @@ export class StudioApiClient {
     return this.request(`/api/files/content?path=${encodeURIComponent(path)}`);
   }
 
+  listDirectory(path: string): Promise<ProjectDirectory> {
+    return this.request(`/api/files/directory?path=${encodeURIComponent(path)}`);
+  }
+
   writeFile(
     path: string,
     content: string,
@@ -155,7 +170,8 @@ export class StudioApiClient {
 
     let response: Response;
     try {
-      response = await this.fetchImplementation(`${this.origin}${path}`, {
+      const fetchRequest = this.fetchImplementation;
+      response = await fetchRequest(`${this.origin}${path}`, {
         ...init,
         headers,
       });

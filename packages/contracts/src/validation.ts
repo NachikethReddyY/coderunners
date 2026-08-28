@@ -148,6 +148,15 @@ function validateManifestReferences(
         message: "Demo patches must not target a protected learner seam.",
       });
     }
+    if (
+      event.type === "demo.patch" &&
+      (event.endMs <= event.atMs || event.endMs > manifest.audio.durationMs)
+    ) {
+      errors.push({
+        path: `/events/${index}/endMs`,
+        message: "Demo typing must end after it starts and within the audio duration.",
+      });
+    }
   });
   return errors;
 }

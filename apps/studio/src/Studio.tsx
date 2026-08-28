@@ -1,10 +1,13 @@
-import { useCallback, useEffect, useReducer, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useReducer,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
 
 import type { CodecastManifest } from "@coderunners/contracts";
-
-import fixtureManifest from "../../../packages/fixtures/codecast-react/manifest.json" with { type: "json" };
-import fixtureAudioUrl from "../../../packages/fixtures/codecast-react/audio/codecast.wav?url";
-
 import {
   createInitialPlayerState,
   playerReducer,
@@ -12,7 +15,11 @@ import {
   serializePlayerState,
   type PlayerAction,
   type PlayerState,
-} from "./player-reducer.js";
+} from "@coderunners/lesson-player";
+
+import fixtureManifest from "../../../packages/fixtures/codecast-react/manifest.json" with { type: "json" };
+import fixtureAudioUrl from "../../../packages/fixtures/codecast-react/audio/codecast.wav?url";
+
 import {
   StudioApiClient,
   StudioApiError,
@@ -22,29 +29,50 @@ import {
 } from "./studio-api.js";
 import { TerminalPanel } from "./TerminalPanel.js";
 import { MonacoEditor } from "./MonacoEditor.js";
+import {
+  AddIcon,
+  ChevronDownIcon,
+  LockIcon,
+  MonitorIcon,
+  ReplayIcon,
+  RunIcon,
+  SaveIcon,
+  TerminalIcon,
+  VolumeIcon,
+  XIcon,
+} from "./icons.js";
+import { FileIcon } from "./file-icon-theme.js";
+import { ProjectExplorer } from "./ProjectExplorer.js";
+import {
+  projectDemoSource,
+  type DemoProjection,
+} from "./demo-projection.js";
 
-const manifest = fixtureManifest as CodecastManifest;
-const storageKey = `coderunners:player:${manifest.id}`;
-const defaultSource = `type HabitRowProps = {
-  completed: boolean;
-  label: string;
-  onToggle(nextCompleted: boolean): void;
+type SelectedLesson = {
+  audioUrl: string;
+  manifest: CodecastManifest;
 };
 
-export function HabitRow({ completed, label, onToggle }: HabitRowProps) {
-  return (
-    <button
-      aria-pressed={completed}
-      onClick={() => {
-        // TODO: Learner-owned toggle state transition.
-        void onToggle;
-      }}
-      type="button"
-    >
-      <span>{label}</span>
-      <strong>{completed ? "Completed" : "Incomplete"}</strong>
-    </button>
-  );
+declare global {
+  interface Window {
+    __CODERUNNERS_LESSON__?: SelectedLesson;
+  }
+}
+
+const selectedLesson = window.__CODERUNNERS_LESSON__;
+const manifest = selectedLesson?.manifest ?? fixtureManifest as CodecastManifest;
+const audioUrl = selectedLesson?.audioUrl ?? fixtureAudioUrl;
+const storageKey = `coderunners:player:${manifest.id}`;
+const playbackRates = [0.75, 1, 1.25, 1.5, 2] as const;
+const continuingStatus = "Check passed. Continuing the lesson…";
+const newSessionStatus = "New lesson session started. Project files were left unchanged.";
+const demoStopAtMs = manifest.events.find(
+  (event) => event.type === "challenge.start",
+)?.atMs;
+const defaultSource = `export function formatHabitLabel(name: string): string {
+  // TODO: Return a label containing the supplied habit name.
+  void name;
+  return "";
 }
 `;
 
@@ -63,14 +91,35 @@ export function Studio() {
     message: "Checking the local host…",
   });
   const [source, setSource] = useState(defaultSource);
+  const [activePath, setActivePath] = useState(manifest.project.entryFile);
   const [revision, setRevision] = useState<string | null>(null);
   const [fileStatus, setFileStatus] = useState("Demo projection is ready.");
   const [approval, setApproval] = useState<CommandApproval | null>(null);
   const [activePty, setActivePty] = useState<ActivePty | null>(null);
+  const [terminalOpen, setTerminalOpen] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewCompleted, setPreviewCompleted] = useState(false);
+  const [previewName, setPreviewName] = useState("Read");
+  const [lessonMenuOpen, setLessonMenuOpen] = useState(false);
+  const [playbackRate, setPlaybackRate] = useState<number>(1);
+  const [volume, setVolume] = useState<number>(1);
+  const [volumeOpen, setVolumeOpen] = useState(false);
+  const [captionsVisible, setCaptionsVisible] = useState(true);
   const audioRef = useRef<HTMLAudioElement>(null);
   const reviewDialogRef = useRef<HTMLDialogElement>(null);
+  const demoProjectionEnabled =
+    activePath === manifest.project.entryFile && demoStopAtMs !== undefined;
+  const [demoProjection, setDemoProjection] = useState<DemoProjection | undefined>(
+    () => getDemoProjection(activePath, player.timeMs),
+  );
+  const demoProjectionRef = useRef(demoProjection);
+  const updateDemoProjection = useCallback((timeMs: number) => {
+    const nextProjection = getDemoProjection(activePath, timeMs);
+    if (sameDemoProjection(demoProjectionRef.current, nextProjection)) {
+      return;
+    }
+    demoProjectionRef.current = nextProjection;
+    setDemoProjection(nextProjection);
+  }, [activePath]);
 
   useEffect(() => {
     let cancelled = false;
@@ -120,7 +169,7 @@ export function Studio() {
     }
     let cancelled = false;
     void api
-      .readFile(manifest.project.entryFile)
+      .readFile(activePath)
       .then((file) => {
         if (cancelled) {
           return;
@@ -137,7 +186,7 @@ export function Studio() {
     return () => {
       cancelled = true;
     };
-  }, [api]);
+  }, [activePath, api]);
 
   useEffect(() => {
     try {
@@ -152,7 +201,64 @@ export function Studio() {
     if (audio !== null && player.playback === "paused") {
       audio.pause();
     }
-  }, [player.playback]);
+    if (
+      audio !== null &&
+      player.forwardSeekLocked &&
+      Math.abs(audio.currentTime * 1_000 - player.timeMs) > 20
+    ) {
+      audio.currentTime = player.timeMs / 1_000;
+    }
+  }, [player.forwardSeekLocked, player.playback, player.timeMs]);
+
+  useEffect(() => {
+    if (audioRef.current !== null) {
+      audioRef.current.playbackRate = playbackRate;
+    }
+  }, [playbackRate]);
+
+  useEffect(() => {
+    if (audioRef.current !== null) {
+      audioRef.current.volume = volume;
+    }
+  }, [volume]);
+
+  useEffect(() => {
+    if (player.playback === "playing" && demoProjectionEnabled) {
+      return;
+    }
+    updateDemoProjection(player.timeMs);
+  }, [demoProjectionEnabled, player.playback, player.timeMs, updateDemoProjection]);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (audio === null || !demoProjectionEnabled || player.playback !== "playing") {
+      return;
+    }
+
+    let animationFrame = 0;
+    const renderTypingFrame = () => {
+      updateDemoProjection(audio.currentTime * 1_000);
+      animationFrame = window.requestAnimationFrame(renderTypingFrame);
+    };
+    animationFrame = window.requestAnimationFrame(renderTypingFrame);
+
+    return () => window.cancelAnimationFrame(animationFrame);
+  }, [demoProjectionEnabled, player.playback, updateDemoProjection]);
+
+  useEffect(() => {
+    if (fileStatus !== continuingStatus && fileStatus !== newSessionStatus) {
+      return;
+    }
+    const timeout = window.setTimeout(
+      () => setFileStatus(
+        api === null
+          ? "Demo projection is ready."
+          : "Live learner file loaded. Save keeps revision protection.",
+      ),
+      2_500,
+    );
+    return () => window.clearTimeout(timeout);
+  }, [api, fileStatus]);
 
   useEffect(() => {
     if (api === null || activePty === null) {
@@ -178,7 +284,9 @@ export function Studio() {
           setActivePty(null);
           if (output.exitCode === 0 && player.activeChallengeId !== undefined) {
             dispatch({ type: "proof.succeeded", challengeId: player.activeChallengeId });
-            setFileStatus("Check passed. The next Codecast segment is unlocked.");
+            setTerminalOpen(false);
+            setFileStatus(continuingStatus);
+            void audioRef.current?.play().then(() => dispatch({ type: "play.requested" }));
           } else {
             setFileStatus("The check did not pass yet. Your work is preserved; revise and run it again.");
           }
@@ -249,13 +357,38 @@ export function Studio() {
       return;
     }
     try {
-      const saved = await api.writeFile(manifest.project.entryFile, source, revision);
+      const saved = await api.writeFile(activePath, source, revision);
       setRevision(saved.revision);
       setFileStatus("Learner file saved.");
     } catch (error) {
       setFileStatus(errorMessage(error));
     }
-  }, [api, revision, source]);
+  }, [activePath, api, revision, source]);
+
+  const openFile = useCallback((path: string) => {
+    setActivePath(path);
+    setRevision(null);
+    setFileStatus(`Opening ${fileName(path)}…`);
+  }, []);
+
+  const startNewSession = useCallback(() => {
+    const audio = audioRef.current;
+    if (audio !== null) {
+      audio.pause();
+      audio.currentTime = 0;
+      audio.playbackRate = 1;
+      audio.volume = 1;
+    }
+    setPlaybackRate(1);
+    setVolume(1);
+    dispatch({ type: "session.reset" });
+    setActivePath(manifest.project.entryFile);
+    setRevision(null);
+    setTerminalOpen(false);
+    setPreviewOpen(false);
+    setLessonMenuOpen(false);
+    setFileStatus(newSessionStatus);
+  }, []);
 
   const requestCheck = useCallback(async () => {
     if (api === null) {
@@ -291,6 +424,7 @@ export function Studio() {
         }
         const started = await api.startPty(response.approval.id);
         setActivePty({ id: started.session.id, cursor: started.session.cursor });
+        setTerminalOpen(true);
         dispatch({ type: "terminal.append", output: "$ Starting approved check…" });
       } catch (error) {
         reviewDialogRef.current?.close();
@@ -313,12 +447,37 @@ export function Studio() {
     [activePty, api],
   );
 
-  const currentCue = manifest.cues.find(
+  const timedCue = manifest.cues.find(
     (cue) => player.timeMs >= cue.startMs && player.timeMs <= cue.endMs,
   ) ?? manifest.cues[0];
   const challenge = manifest.challenges.find(
     (item) => item.id === player.activeChallengeId,
   );
+  const playerProgress = Math.min(
+    100,
+    Math.max(0, (player.timeMs / manifest.audio.durationMs) * 100),
+  );
+  const fileStatusIsIdle =
+    fileStatus === "Demo projection is ready." ||
+    fileStatus === "Live learner file loaded. Save keeps revision protection.";
+  const timelineMarkers = manifest.events.filter(
+    (event) => event.type === "challenge.start",
+  );
+  const focusEvent = [...manifest.events].reverse().find(
+    (event) => event.type === "editor.focusRange" && event.path === activePath && event.atMs <= player.timeMs,
+  );
+  const focusRange = focusEvent?.type === "editor.focusRange" ? focusEvent.range : undefined;
+  const lessonState = challenge !== undefined
+    ? "Try it out"
+    : player.completedChallengeIds.length === manifest.challenges.length
+      ? player.timeMs >= manifest.audio.durationMs - 250 ? "Complete" : "Continuing"
+      : player.timeMs > 0
+        ? "Learning"
+        : "Ready";
+  const currentCue = timedCue;
+  const currentCaption = currentCue === undefined
+    ? undefined
+    : captionForTime(currentCue.text, currentCue.startMs, currentCue.endMs, player.timeMs);
 
   return (
     <main className={previewOpen ? "studio preview-open" : "studio"}>
@@ -329,46 +488,191 @@ export function Studio() {
         }
         preload="metadata"
         ref={audioRef}
-        src={fixtureAudioUrl}
+        src={audioUrl}
       />
-      <header className="studio-topbar">
-        <div className="brand-lockup"><span aria-hidden="true" className="brand-mark">&lt;/&gt;</span><strong>CodeRunners</strong><span className="product-label">Studio</span></div>
-        <div aria-live="polite" className={`host-status is-${hostStatus.kind}`} role="status">{hostStatus.message}</div>
-        <button className="quiet-button" onClick={() => setPreviewOpen((open) => !open)} type="button">{previewOpen ? "Close preview" : "Open preview"}</button>
-      </header>
-
+      <nav aria-label="Lesson navigation" className="lesson-bar">
+        <div className="lesson-switcher-wrap">
+          <button
+            aria-expanded={lessonMenuOpen}
+            aria-label={manifest.title}
+            className="lesson-switcher"
+            onClick={() => setLessonMenuOpen((open) => !open)}
+            type="button"
+          >
+            <span className="lesson-kicker">Lesson</span>
+            <strong>{manifest.title}</strong>
+            <ChevronDownIcon />
+          </button>
+          {lessonMenuOpen ? (
+            <div aria-label="Lesson sessions" className="lesson-menu" role="menu">
+              <button aria-current="page" onClick={() => setLessonMenuOpen(false)} role="menuitem" type="button">
+                <span>Current session</span>
+                <small>{manifest.project.name}</small>
+              </button>
+            </div>
+          ) : null}
+        </div>
+        <div aria-label={hostStatus.message} className="lesson-status" role="status" title={hostStatus.message}>
+          <span className={`host-dot is-${hostStatus.kind}`} />
+          <span>{lessonState}</span>
+        </div>
+        <div className="lesson-actions">
+          <button
+            aria-label={previewOpen ? "Close preview" : "Open preview"}
+            className="topbar-button"
+            onClick={() => setPreviewOpen((open) => !open)}
+            type="button"
+          >
+            <MonitorIcon />
+            <span>Preview</span>
+          </button>
+          <button aria-label="New session" className="topbar-button" onClick={startNewSession} type="button">
+            <AddIcon />
+            <span>New session</span>
+          </button>
+        </div>
+      </nav>
       <div className="studio-grid">
-        <nav aria-label="Project files" className="explorer-pane">
-          <div className="pane-heading"><span>Explorer</span><span className="count">1</span></div>
-          <button aria-current="page" className="file-row" type="button"><span>src</span><span>components</span><strong>HabitRow.tsx</strong></button>
-          <p className="pane-note">The lesson projection can focus this file. Your editor changes are never replayed by the timeline.</p>
-        </nav>
+        <ProjectExplorer
+          activePath={activePath}
+          api={api}
+          onError={setFileStatus}
+          onOpenFile={openFile}
+          projectName={manifest.project.name}
+        />
 
         <section aria-label="Codecast workspace" className="workspace-pane">
-          <div className="workspace-toolbar"><div><p className="eyebrow">Codecast</p><h1>{manifest.title}</h1></div><button className="quiet-button" onClick={saveFile} type="button">Save</button></div>
-          <div className="file-tab"><span>HabitRow.tsx</span><span className="learner-badge">Learner-owned seam</span></div>
-          <div className="editor-region"><MonacoEditor onChange={handleSourceChange} value={source} /></div>
-          <p aria-live="polite" className="file-status">{fileStatus}</p>
+          <header className="file-tab">
+            <div className="file-identity">
+              <FileIcon name={fileName(demoProjection?.path ?? activePath)} />
+              <span>{fileName(demoProjection?.path ?? activePath)}</span>
+              {demoProjection === undefined ? null : <span className="projection-badge">Demo</span>}
+            </div>
+            <div className="file-actions">
+              <button aria-label="Run project check" className="file-run-button" disabled={demoProjection !== undefined} onClick={() => void requestCheck()} type="button"><RunIcon /><span>Run</span></button>
+              <button aria-label="Save current file" className="file-action" data-tooltip="Save" disabled={demoProjection !== undefined} onClick={() => void saveFile()} type="button"><SaveIcon /></button>
+              <button aria-label={terminalOpen ? "Close terminal" : "Open terminal"} className="file-action" data-tooltip="Terminal" onClick={() => setTerminalOpen((open) => !open)} type="button"><TerminalIcon /></button>
+            </div>
+          </header>
+          <div className="editor-region"><MonacoEditor focusRange={focusRange} onChange={handleSourceChange} path={demoProjection?.path ?? activePath} readOnly={demoProjection !== undefined} showTypingCaret={demoProjection?.typing === true} value={demoProjection?.source ?? source} /></div>
+          <p aria-live="polite" className={`file-status${fileStatusIsIdle ? " is-idle" : ""}`}>{fileStatus}</p>
 
-          <section aria-label="Terminal" className="terminal-pane"><div className="pane-heading"><span>Terminal</span><span className="terminal-label">real local output</span></div><TerminalPanel onInput={activePty === null ? undefined : sendTerminalInput} output={player.terminalOutput} /></section>
-
-          <section aria-label="Codecast player" className="player-pane">
-            <div className="player-controls"><button className="play-button" onClick={() => void togglePlayback()} type="button">{player.playback === "playing" ? "Pause Codecast" : "Play Codecast"}</button><span className="timecode">{formatTime(player.timeMs)} / {formatTime(manifest.audio.durationMs)}</span><button className="quiet-button" onClick={() => seek(Math.max(0, player.timeMs - 5_000))} type="button">Replay 5s</button></div>
-            <label className="timeline-label" htmlFor="codecast-timeline">Timeline <span>{player.forwardSeekLocked ? "Forward seek locked until proof" : "Seek available"}</span></label>
-            <input aria-describedby="timeline-help" id="codecast-timeline" max={manifest.audio.durationMs} min="0" onChange={(event) => seek(Number(event.target.value))} step="250" type="range" value={player.timeMs} />
-            <p id="timeline-help" className="caption" aria-live="polite"><span>{formatTime(player.timeMs)}</span> {currentCue?.text}</p>
+          <section aria-label="Terminal" className="terminal-pane" hidden={!terminalOpen}>
+            <div className="pane-heading">
+              <span>Terminal</span>
+              <button aria-label="Close terminal" className="panel-close" onClick={() => setTerminalOpen(false)} title="Close terminal" type="button"><XIcon /></button>
+            </div>
+            <TerminalPanel onInput={activePty === null ? undefined : sendTerminalInput} output={player.terminalOutput} />
           </section>
 
-          {challenge !== undefined ? <section aria-labelledby="challenge-title" className="challenge-gate"><div><p className="eyebrow">Challenge locked</p><h2 id="challenge-title">{challenge.title}</h2><p>{challenge.instruction}</p></div><div className="challenge-actions"><button className="quiet-button" onClick={() => setFileStatus(challenge.hints.find(Boolean) ?? "Inspect the state transition.")} type="button">Show next hint</button><button className="primary-button" onClick={() => void requestCheck()} type="button">Review and run check</button></div></section> : null}
+          <section aria-label="Codecast player" className="player-pane">
+            <button
+              aria-label={player.playback === "playing" ? "Pause Codecast" : "Play Codecast"}
+              className="play-button"
+              disabled={player.forwardSeekLocked}
+              onClick={() => void togglePlayback()}
+              title={player.playback === "playing" ? "Pause Codecast" : "Play Codecast"}
+              type="button"
+            >
+              <span aria-hidden="true" className={player.playback === "playing" ? "pause-glyph" : "play-glyph"} />
+            </button>
+            <button
+              aria-label="Replay 5 seconds"
+              className="player-icon-button"
+              onClick={() => seek(Math.max(0, player.timeMs - 5_000))}
+              title="Replay 5 seconds"
+              type="button"
+            >
+              <ReplayIcon />
+            </button>
+            <div className="timeline-control">
+              <label className="visually-hidden" htmlFor="codecast-timeline">Codecast timeline</label>
+              <input
+                aria-describedby="timeline-help timeline-state"
+                id="codecast-timeline"
+                max={manifest.audio.durationMs}
+                min="0"
+                onChange={(event) => seek(Number(event.target.value))}
+                step="1"
+                style={{ "--player-progress": `${playerProgress}%` } as CSSProperties}
+                type="range"
+                value={player.timeMs}
+              />
+              <div aria-hidden="true" className="timeline-markers">
+                {timelineMarkers.map((event) => (
+                  <span
+                    className="timeline-marker is-challenge"
+                    key={event.id}
+                    style={{ left: `${(event.atMs / manifest.audio.durationMs) * 100}%` }}
+                  />
+                ))}
+              </div>
+            </div>
+            <div className={`volume-control${volumeOpen ? " is-open" : ""}`}>
+              <button
+                aria-expanded={volumeOpen}
+                aria-label="Adjust volume"
+                className="volume-trigger"
+                disabled={player.forwardSeekLocked}
+                onClick={() => setVolumeOpen((open) => !open)}
+                title={`${Math.round(volume * 100)}% volume`}
+                type="button"
+              >
+                <VolumeIcon />
+              </button>
+              {volumeOpen ? <div className="volume-popover">
+                <label className="visually-hidden" htmlFor="playback-volume">Playback volume</label>
+                <input
+                  aria-label="Playback volume"
+                  id="playback-volume"
+                  max="1"
+                  min="0"
+                  onChange={(event) => setVolume(Number(event.target.value))}
+                  step="0.05"
+                  style={{ "--volume-progress": `${volume * 100}%` } as CSSProperties}
+                  type="range"
+                  value={volume}
+                />
+              </div> : null}
+            </div>
+            <button
+              aria-label={captionsVisible ? "Hide captions" : "Show captions"}
+              aria-pressed={captionsVisible}
+              className="captions-button"
+              onClick={() => setCaptionsVisible((visible) => !visible)}
+              title={captionsVisible ? "Hide captions" : "Show captions"}
+              type="button"
+            >
+              CC
+            </button>
+            <label className="visually-hidden" htmlFor="playback-speed">Playback speed</label>
+            <select
+              aria-label="Playback speed"
+              className="speed-select"
+              disabled={player.forwardSeekLocked}
+              id="playback-speed"
+              onChange={(event) => setPlaybackRate(Number(event.target.value))}
+              value={playbackRate}
+            >
+              {playbackRates.map((rate) => <option key={rate} value={rate}>{rate}×</option>)}
+            </select>
+            <span className="timecode">{formatTime(player.timeMs)} / {formatTime(manifest.audio.durationMs)}</span>
+            <span className="visually-hidden" id="timeline-state">
+              {player.forwardSeekLocked ? "Forward seek locked until proof" : "Seek available"}
+            </span>
+            {captionsVisible ? <p id="timeline-help" className="caption" aria-live="polite">{currentCaption}</p> : null}
+          </section>
+
+          {challenge !== undefined ? <section aria-labelledby="challenge-title" className="challenge-gate"><div className="challenge-copy"><span className="challenge-icon"><LockIcon /></span><div><p className="eyebrow">Checkpoint</p><h2 id="challenge-title">{challenge.title}</h2><p>{challenge.instruction}</p></div></div><div className="challenge-actions"><button className="quiet-button" onClick={() => setFileStatus(challenge.hints.find(Boolean) ?? "Inspect the typed return value.")} type="button">Show hint</button><button className="primary-button" onClick={() => void requestCheck()} type="button">Run check</button></div></section> : null}
         </section>
 
-        {previewOpen ? <aside aria-labelledby="preview-title" className="preview-pane"><div className="pane-heading"><span id="preview-title">Web preview</span><button className="icon-text-button" onClick={() => setPreviewOpen(false)} type="button">Close</button></div><div className="preview-page"><p className="eyebrow">Today</p><h2>Habit tracker</h2><p>Try the live preview; it is interactive and does not pause narration.</p><button aria-pressed={previewCompleted} className={previewCompleted ? "habit is-complete" : "habit"} onClick={() => setPreviewCompleted((completed) => !completed)} type="button"><span>Morning walk</span><strong>{previewCompleted ? "Completed" : "Incomplete"}</strong></button></div></aside> : null}
+        {previewOpen ? <aside aria-labelledby="preview-title" className="preview-pane"><div className="pane-heading"><span id="preview-title">Web preview</span><button aria-label="Close preview" className="panel-close" onClick={() => setPreviewOpen(false)} title="Close preview" type="button"><XIcon /></button></div><div className="preview-page"><p className="eyebrow">TypeScript basics</p><h2>Habit label</h2><p>Try a name while you work on the formatter.</p><label htmlFor="preview-habit-name">Habit name</label><input id="preview-habit-name" onChange={(event) => setPreviewName(event.target.value)} value={previewName} /><output>Habit: {previewName}</output></div></aside> : null}
       </div>
 
       <dialog aria-labelledby="review-title" className="command-dialog" ref={reviewDialogRef}>
-        <p className="eyebrow">Command review</p><h2 id="review-title">Run the focused check?</h2>
-        {approval === null ? <p>Preparing the approved command…</p> : <><p>This is the exact manifest-defined command that can prove the current challenge.</p><pre><code>{approval.command.executable} {approval.command.args.join(" ")}</code><br /><code>working directory: {approval.command.cwd}</code></pre></>}
-        <div className="dialog-actions"><button onClick={() => void reviewCheck(false)} type="button">Cancel</button><button className="primary-button" onClick={() => void reviewCheck(true)} type="button">Run check</button></div>
+        <div className="command-dialog-heading"><span className="command-dialog-icon"><TerminalIcon /></span><div><p className="eyebrow">Command review</p><h2 id="review-title">Run the focused check?</h2></div></div>
+        {approval === null ? <p>Preparing the approved command…</p> : <><p>Review the project command before it runs in the local workspace.</p><div className="command-summary"><code><span aria-hidden="true">$</span> {approval.command.executable} {approval.command.args.join(" ")}</code><div><span>Working directory</span><code>{approval.command.cwd}</code></div></div></>}
+        <div className="dialog-actions"><button className="quiet-button" onClick={() => void reviewCheck(false)} type="button">Cancel</button><button className="primary-button" onClick={() => void reviewCheck(true)} type="button">Run check</button></div>
       </dialog>
     </main>
   );
@@ -397,4 +701,49 @@ function errorStatus(error: unknown): HostStatus {
 function formatTime(timeMs: number): string {
   const totalSeconds = Math.floor(timeMs / 1_000);
   return `${Math.floor(totalSeconds / 60)}:${String(totalSeconds % 60).padStart(2, "0")}`;
+}
+
+function captionForTime(text: string, startMs: number, endMs: number, timeMs: number): string {
+  const sentences = text.match(/.+?(?:[.!?]+(?=\s|$)|$)/g)?.map((sentence) => sentence.trim()).filter(Boolean) ?? [text];
+  if (sentences.length === 1) {
+    return sentences[0]!;
+  }
+  const weights = sentences.map((sentence) => sentence.split(/\s+/).length);
+  const totalWeight = weights.reduce((total, weight) => total + weight, 0);
+  const progress = Math.max(0, Math.min(1, (timeMs - startMs) / (endMs - startMs)));
+  let threshold = 0;
+  for (let index = 0; index < sentences.length; index += 1) {
+    threshold += weights[index]! / totalWeight;
+    if (progress <= threshold) {
+      return sentences[index]!;
+    }
+  }
+  return sentences.at(-1)!;
+}
+
+function fileName(path: string): string {
+  return path.split("/").at(-1) ?? path;
+}
+
+function getDemoProjection(
+  activePath: string,
+  timeMs: number,
+): DemoProjection | undefined {
+  if (activePath !== manifest.project.entryFile || demoStopAtMs === undefined) {
+    return undefined;
+  }
+  return projectDemoSource(manifest.events, timeMs, demoStopAtMs);
+}
+
+function sameDemoProjection(
+  left: DemoProjection | undefined,
+  right: DemoProjection | undefined,
+): boolean {
+  return left === right || (
+    left !== undefined &&
+    right !== undefined &&
+    left.path === right.path &&
+    left.source === right.source &&
+    left.typing === right.typing
+  );
 }

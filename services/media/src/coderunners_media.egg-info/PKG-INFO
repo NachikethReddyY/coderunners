@@ -1,0 +1,10 @@
+Metadata-Version: 2.4
+Name: coderunners-media
+Version: 0.1.0
+Summary: Local JSONL media sidecar for CodeRunners
+Requires-Python: <3.13,>=3.11
+Requires-Dist: en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl
+Requires-Dist: misaki[en]==0.9.4
+Requires-Dist: mlx-audio==0.5.0
+Requires-Dist: mlx-whisper==0.4.3
+Requires-Dist: numpy>=1.26.4

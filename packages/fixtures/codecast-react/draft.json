@@ -1,81 +1,179 @@
 {
   "schemaVersion": 1,
-  "id": "react-habit-toggle",
-  "title": "Build a habit toggle",
+  "id": "typescript-habit-label",
+  "title": "Build a typed function",
   "project": {
     "name": "habit-tracker",
-    "entryFile": "src/components/HabitRow.tsx",
+    "entryFile": "src/formatHabitLabel.ts",
     "commands": {
-      "dev": {
-        "executable": "pnpm",
-        "args": ["dev"]
-      },
-      "check": {
-        "executable": "pnpm",
-        "args": ["test", "toggle-habit"]
-      }
+      "dev": { "executable": "pnpm", "args": ["dev"] },
+      "check": { "executable": "pnpm", "args": ["test"] }
     }
   },
   "cues": [
     {
       "id": "intro",
-      "text": "Open HabitRow and trace how a click changes the completed state."
+      "text": "Let us build a TypeScript function from an empty file. It will take a habit name and turn it into a consistent label. Watch the structure first. After the walkthrough, the editor will reset and you will recreate the function yourself."
     },
     {
-      "id": "challenge",
-      "text": "Implement the toggle, then prove it with the focused test."
+      "id": "declaration",
+      "text": "Start with the keywords export function. Export lets another file import this behavior. Then type the name formatHabitLabel. The name keeps the function focused on one job. Add an opening parenthesis to begin the list of inputs the function needs."
+    },
+    {
+      "id": "parameter",
+      "text": "Inside the input list, type name. This parameter represents habit text supplied by a caller. Add a colon and the word string. That annotation makes TypeScript accept text and powers useful IntelliSense. Close the parenthesis to finish the input list."
+    },
+    {
+      "id": "return-type",
+      "text": "Now describe the output. Add a colon after the parenthesis, followed by string. The first string annotation belongs to the input. The second promises that the returned value is text. Open the function body with a brace and move to an indented line."
+    },
+    {
+      "id": "function-body",
+      "text": "Type return to send a value back. Use a template string so fixed text and the parameter stay together. Begin with Habit, a colon, and a space. Insert the name parameter, finish the statement, and close the function body. The function is complete."
+    },
+    {
+      "id": "review",
+      "text": "Read the signature from left to right. formatHabitLabel receives one string and returns one string. The body combines fixed text with the supplied value. For Read, the result is Habit colon Read. The focused test checks that contract."
+    },
+    {
+      "id": "recreate",
+      "text": "Now it is your turn. At the checkpoint, the demo disappears and your starter file returns. Recreate the function with the same typed parameter, typed return value, and label format. Include the supplied name in the result. Save your work, then run the focused check."
+    },
+    {
+      "id": "next-lesson",
+      "text": "Nice work. You recreated a typed function and proved its behavior. Next, we will call this formatter from a React component, pass a habit through props, and show the returned label in the interface."
     }
   ],
   "events": [
     {
-      "id": "open-row",
+      "id": "open-demo",
       "type": "editor.open",
-      "anchor": {
-        "cueId": "intro",
-        "phrase": "Open HabitRow",
-        "occurrence": 1
-      },
-      "path": "src/components/HabitRow.tsx"
+      "anchor": { "cueId": "intro", "phrase": "TypeScript function", "occurrence": 1 },
+      "path": "src/formatHabitLabel.ts"
     },
     {
-      "id": "focus-toggle",
+      "id": "type-function-keyword",
+      "type": "demo.patch",
+      "anchor": { "cueId": "declaration", "phrase": "export function", "occurrence": 1, "edge": "end" },
+      "path": "lesson/formatHabitLabel.demo.ts",
+      "patch": "export function "
+    },
+    {
+      "id": "type-function-name",
+      "type": "demo.patch",
+      "anchor": { "cueId": "declaration", "phrase": "type the name formatHabitLabel", "occurrence": 1, "edge": "end" },
+      "path": "lesson/formatHabitLabel.demo.ts",
+      "patch": "export function formatHabitLabel"
+    },
+    {
+      "id": "type-open-parenthesis",
+      "type": "demo.patch",
+      "anchor": { "cueId": "declaration", "phrase": "opening parenthesis", "occurrence": 1, "edge": "end" },
+      "path": "lesson/formatHabitLabel.demo.ts",
+      "patch": "export function formatHabitLabel("
+    },
+    {
+      "id": "type-parameter-name",
+      "type": "demo.patch",
+      "anchor": { "cueId": "parameter", "phrase": "type name", "occurrence": 1, "edge": "end" },
+      "path": "lesson/formatHabitLabel.demo.ts",
+      "patch": "export function formatHabitLabel(name"
+    },
+    {
+      "id": "type-parameter-type",
+      "type": "demo.patch",
+      "anchor": { "cueId": "parameter", "phrase": "word string", "occurrence": 1, "edge": "end" },
+      "path": "lesson/formatHabitLabel.demo.ts",
+      "patch": "export function formatHabitLabel(name: string"
+    },
+    {
+      "id": "focus-parameter-type",
       "type": "editor.focusRange",
-      "anchor": {
-        "cueId": "intro",
-        "phrase": "completed state",
-        "occurrence": 1
-      },
-      "path": "src/components/HabitRow.tsx",
+      "anchor": { "cueId": "parameter", "phrase": "useful IntelliSense", "occurrence": 1 },
+      "path": "src/formatHabitLabel.ts",
       "range": {
-        "start": { "line": 12, "column": 3 },
-        "end": { "line": 14, "column": 8 }
+        "start": { "line": 1, "column": 40 },
+        "end": { "line": 1, "column": 46 }
       }
     },
     {
-      "id": "start-toggle",
+      "id": "type-close-parenthesis",
+      "type": "demo.patch",
+      "anchor": { "cueId": "parameter", "phrase": "Close the parenthesis", "occurrence": 1, "edge": "end" },
+      "path": "lesson/formatHabitLabel.demo.ts",
+      "patch": "export function formatHabitLabel(name: string)"
+    },
+    {
+      "id": "type-return-type",
+      "type": "demo.patch",
+      "anchor": { "cueId": "return-type", "phrase": "followed by string", "occurrence": 1, "edge": "end" },
+      "path": "lesson/formatHabitLabel.demo.ts",
+      "patch": "export function formatHabitLabel(name: string): string"
+    },
+    {
+      "id": "type-function-body",
+      "type": "demo.patch",
+      "anchor": { "cueId": "return-type", "phrase": "function body with a brace", "occurrence": 1, "edge": "end" },
+      "path": "lesson/formatHabitLabel.demo.ts",
+      "patch": "export function formatHabitLabel(name: string): string {\n  "
+    },
+    {
+      "id": "type-return-keyword",
+      "type": "demo.patch",
+      "anchor": { "cueId": "function-body", "phrase": "Type return", "occurrence": 1, "edge": "end" },
+      "path": "lesson/formatHabitLabel.demo.ts",
+      "patch": "export function formatHabitLabel(name: string): string {\n  return "
+    },
+    {
+      "id": "type-label-prefix",
+      "type": "demo.patch",
+      "anchor": { "cueId": "function-body", "phrase": "Habit, a colon, and a space", "occurrence": 1, "edge": "end" },
+      "path": "lesson/formatHabitLabel.demo.ts",
+      "patch": "export function formatHabitLabel(name: string): string {\n  return `Habit: "
+    },
+    {
+      "id": "type-name-interpolation",
+      "type": "demo.patch",
+      "anchor": { "cueId": "function-body", "phrase": "Insert the name parameter", "occurrence": 1, "edge": "end" },
+      "path": "lesson/formatHabitLabel.demo.ts",
+      "patch": "export function formatHabitLabel(name: string): string {\n  return `Habit: ${name}"
+    },
+    {
+      "id": "type-finish-statement",
+      "type": "demo.patch",
+      "anchor": { "cueId": "function-body", "phrase": "finish the statement", "occurrence": 1, "edge": "end" },
+      "path": "lesson/formatHabitLabel.demo.ts",
+      "patch": "export function formatHabitLabel(name: string): string {\n  return `Habit: ${name}`;"
+    },
+    {
+      "id": "type-close-function",
+      "type": "demo.patch",
+      "anchor": { "cueId": "function-body", "phrase": "close the function body", "occurrence": 1, "edge": "end" },
+      "path": "lesson/formatHabitLabel.demo.ts",
+      "patch": "export function formatHabitLabel(name: string): string {\n  return `Habit: ${name}`;\n}\n"
+    },
+    {
+      "id": "start-try-it",
       "type": "challenge.start",
       "anchor": {
-        "cueId": "challenge",
-        "phrase": "Implement the toggle",
-        "occurrence": 1
+        "cueId": "recreate",
+        "phrase": "Save your work, then run the focused check.",
+        "occurrence": 1,
+        "edge": "end"
       },
-      "challengeId": "toggle-habit"
+      "challengeId": "format-habit-label"
     }
   ],
   "challenges": [
     {
-      "id": "toggle-habit",
-      "title": "Toggle the selected habit",
-      "instruction": "Update the learner-owned seam so clicking a row toggles its completed state.",
-      "seam": {
-        "path": "src/components/HabitRow.tsx",
-        "startLine": 12,
-        "endLine": 14
-      },
+      "id": "format-habit-label",
+      "title": "Recreate the function",
+      "instruction": "Recreate the demonstrated typed function so a habit name becomes a label beginning with Habit, a colon, and one space.",
+      "seam": { "path": "src/formatHabitLabel.ts", "startLine": 1, "endLine": 5 },
       "hints": [
-        "Find the state transition triggered by the row click.",
-        "The next value depends on the current completed value.",
-        "Call the supplied change handler with the opposite completed value."
+        "Start with an exported named function and give its input and output explicit text types.",
+        "Use the supplied habit name when you build the returned label.",
+        "The fixed prefix contains the word Habit, a colon, and one space."
       ],
       "checkCommandId": "check"
     }

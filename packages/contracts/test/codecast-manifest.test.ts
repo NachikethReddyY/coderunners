@@ -21,14 +21,14 @@ describe("Codecast manifest contract", () => {
     const eventOutsideAudio = structuredClone(manifest) as {
       events: Array<{ atMs: number }>;
     };
-    eventOutsideAudio.events[0]!.atMs = 70_001;
+    eventOutsideAudio.events[0]!.atMs = manifest.audio.durationMs + 1;
 
     expect(validateCodecastManifest(eventOutsideAudio)).toEqual({
       success: false,
       errors: [
         {
           path: "/events/0/atMs",
-          message: "Event time must be within the 70000ms audio duration.",
+        message: `Event time must be within the ${manifest.audio.durationMs}ms audio duration.`,
         },
       ],
     });
@@ -82,6 +82,7 @@ describe("Codecast manifest contract", () => {
       id: "solve-the-seam",
       type: "demo.patch",
       atMs: 20_000,
+      endMs: 21_000,
       path: leakedSolution.challenges[0]!.seam.path,
       patch: "+ onToggle(!completed)",
     });

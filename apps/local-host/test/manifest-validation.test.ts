@@ -68,7 +68,7 @@ describe("manifest validation API", () => {
         commandId: "check",
         command: {
           executable: "pnpm",
-          args: ["test", "toggle-habit"],
+          args: ["test"],
         },
       },
     });

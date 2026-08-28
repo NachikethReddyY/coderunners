@@ -1,0 +1,3 @@
+mlx-audio @ git+https://github.com/Blaizzy/mlx-audio.git@5522a2241129505e2ba5966d6572ce4962b766c4
+numpy<2,>=1.26
+setuptools>=78

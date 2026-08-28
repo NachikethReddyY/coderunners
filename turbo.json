@@ -9,7 +9,7 @@
       "dependsOn": ["^check"]
     },
     "test": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^test"]
     }
   }
 }

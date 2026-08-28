@@ -1,0 +1,10 @@
+pyproject.toml
+src/coderunners_voice_clone/__init__.py
+src/coderunners_voice_clone/worker.py
+src/coderunners_voice_clone.egg-info/PKG-INFO
+src/coderunners_voice_clone.egg-info/SOURCES.txt
+src/coderunners_voice_clone.egg-info/dependency_links.txt
+src/coderunners_voice_clone.egg-info/entry_points.txt
+src/coderunners_voice_clone.egg-info/requires.txt
+src/coderunners_voice_clone.egg-info/top_level.txt
+tests/test_worker.py

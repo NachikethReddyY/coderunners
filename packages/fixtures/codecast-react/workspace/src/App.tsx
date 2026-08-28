@@ -1,19 +1,18 @@
 import { useState } from "react";
 
-import { HabitRow } from "./components/HabitRow";
+import { formatHabitLabel } from "./formatHabitLabel";
 
 export function App() {
-  const [completed, setCompleted] = useState(false);
+  const [name, setName] = useState("Read");
+  const label = formatHabitLabel(name);
 
   return (
     <main>
-      <p>Today</p>
-      <h1>Habit tracker</h1>
-      <HabitRow
-        completed={completed}
-        label="Morning walk"
-        onToggle={setCompleted}
-      />
+      <p className="eyebrow">TypeScript basics</p>
+      <h1>Habit label</h1>
+      <label htmlFor="habit-name">Habit name</label>
+      <input id="habit-name" onChange={(event) => setName(event.target.value)} value={name} />
+      <output>{label || "Your formatted label will appear here."}</output>
     </main>
   );
 }

@@ -1,0 +1,2317 @@
+{
+  "schemaVersion": 1,
+  "durationMs": 103440,
+  "alignmentConfidence": 0.9278,
+  "cues": [
+    {
+      "id": "intro",
+      "startMs": 0,
+      "endMs": 10600
+    },
+    {
+      "id": "declaration",
+      "startMs": 10600,
+      "endMs": 24720
+    },
+    {
+      "id": "parameter",
+      "startMs": 24720,
+      "endMs": 40680
+    },
+    {
+      "id": "return-type",
+      "startMs": 40680,
+      "endMs": 53840
+    },
+    {
+      "id": "function-body",
+      "startMs": 53840,
+      "endMs": 67920
+    },
+    {
+      "id": "review",
+      "startMs": 67920,
+      "endMs": 80440
+    },
+    {
+      "id": "recreate",
+      "startMs": 80440,
+      "endMs": 93880
+    },
+    {
+      "id": "next-lesson",
+      "startMs": 93880,
+      "endMs": 103440
+    }
+  ],
+  "words": [
+    {
+      "cueId": "intro",
+      "wordIndex": 0,
+      "startMs": 0,
+      "endMs": 400,
+      "confidence": 0.8535
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 1,
+      "startMs": 400,
+      "endMs": 600,
+      "confidence": 0.9482
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 2,
+      "startMs": 600,
+      "endMs": 680,
+      "confidence": 0.9819
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 3,
+      "startMs": 680,
+      "endMs": 900,
+      "confidence": 0.6157
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 4,
+      "startMs": 900,
+      "endMs": 1200,
+      "confidence": 0.6738
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 5,
+      "startMs": 1200,
+      "endMs": 1580,
+      "confidence": 0.9771
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 6,
+      "startMs": 1580,
+      "endMs": 1760,
+      "confidence": 0.9839
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 7,
+      "startMs": 1760,
+      "endMs": 1880,
+      "confidence": 0.9927
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 8,
+      "startMs": 1880,
+      "endMs": 2060,
+      "confidence": 0.9966
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 9,
+      "startMs": 2060,
+      "endMs": 2400,
+      "confidence": 0.9956
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 10,
+      "startMs": 2720,
+      "endMs": 2820,
+      "confidence": 0.9805
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 11,
+      "startMs": 2820,
+      "endMs": 2980,
+      "confidence": 0.9932
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 12,
+      "startMs": 2980,
+      "endMs": 3160,
+      "confidence": 0.9961
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 13,
+      "startMs": 3160,
+      "endMs": 3320,
+      "confidence": 0.9902
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 14,
+      "startMs": 3320,
+      "endMs": 3440,
+      "confidence": 0.7886
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 15,
+      "startMs": 3440,
+      "endMs": 3660,
+      "confidence": 0.957
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 16,
+      "startMs": 3660,
+      "endMs": 3800,
+      "confidence": 0.9624
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 17,
+      "startMs": 3800,
+      "endMs": 3980,
+      "confidence": 0.9927
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 18,
+      "startMs": 3980,
+      "endMs": 4120,
+      "confidence": 0.9883
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 19,
+      "startMs": 4120,
+      "endMs": 4320,
+      "confidence": 0.9951
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 20,
+      "startMs": 4320,
+      "endMs": 4500,
+      "confidence": 0.9946
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 21,
+      "startMs": 4500,
+      "endMs": 4780,
+      "confidence": 0.9897
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 22,
+      "startMs": 4780,
+      "endMs": 5060,
+      "confidence": 0.9976
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 23,
+      "startMs": 5280,
+      "endMs": 5500,
+      "confidence": 0.9937
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 24,
+      "startMs": 5500,
+      "endMs": 5700,
+      "confidence": 0.9897
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 25,
+      "startMs": 5700,
+      "endMs": 5960,
+      "confidence": 0.9917
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 26,
+      "startMs": 5960,
+      "endMs": 6340,
+      "confidence": 0.9902
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 27,
+      "startMs": 6600,
+      "endMs": 6800,
+      "confidence": 0.9966
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 28,
+      "startMs": 6800,
+      "endMs": 6980,
+      "confidence": 0.9961
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 29,
+      "startMs": 6980,
+      "endMs": 7340,
+      "confidence": 0.8975
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 30,
+      "startMs": 7680,
+      "endMs": 7800,
+      "confidence": 0.9956
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 31,
+      "startMs": 7800,
+      "endMs": 7960,
+      "confidence": 0.9819
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 32,
+      "startMs": 7960,
+      "endMs": 8200,
+      "confidence": 0.9976
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 33,
+      "startMs": 8200,
+      "endMs": 8560,
+      "confidence": 0.9893
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 34,
+      "startMs": 8560,
+      "endMs": 8740,
+      "confidence": 0.8101
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 35,
+      "startMs": 8740,
+      "endMs": 8860,
+      "confidence": 0.9976
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 36,
+      "startMs": 8860,
+      "endMs": 9020,
+      "confidence": 0.7578
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 37,
+      "startMs": 9020,
+      "endMs": 9320,
+      "confidence": 0.9375
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 38,
+      "startMs": 9320,
+      "endMs": 9520,
+      "confidence": 0.9966
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 39,
+      "startMs": 9520,
+      "endMs": 9760,
+      "confidence": 0.9946
+    },
+    {
+      "cueId": "intro",
+      "wordIndex": 40,
+      "startMs": 9760,
+      "endMs": 10300,
+      "confidence": 0.9873
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 0,
+      "startMs": 10960,
+      "endMs": 11120,
+      "confidence": 0.9878
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 1,
+      "startMs": 11120,
+      "endMs": 11340,
+      "confidence": 0.9985
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 2,
+      "startMs": 11340,
+      "endMs": 11480,
+      "confidence": 0.9912
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 3,
+      "startMs": 11480,
+      "endMs": 11780,
+      "confidence": 0.488
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 4,
+      "startMs": 11780,
+      "endMs": 12320,
+      "confidence": 0.8965
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 5,
+      "startMs": 12320,
+      "endMs": 12960,
+      "confidence": 0.9595
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 6,
+      "startMs": 13240,
+      "endMs": 13700,
+      "confidence": 0.7573
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 7,
+      "startMs": 13700,
+      "endMs": 13900,
+      "confidence": 0.8906
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 8,
+      "startMs": 13900,
+      "endMs": 14320,
+      "confidence": 0.9961
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 9,
+      "startMs": 14320,
+      "endMs": 14560,
+      "confidence": 0.9976
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 10,
+      "startMs": 14560,
+      "endMs": 15000,
+      "confidence": 0.9897
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 11,
+      "startMs": 15000,
+      "endMs": 15240,
+      "confidence": 0.998
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 12,
+      "startMs": 15240,
+      "endMs": 15700,
+      "confidence": 0.979
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 13,
+      "startMs": 16100,
+      "endMs": 16320,
+      "confidence": 0.9893
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 14,
+      "startMs": 16320,
+      "endMs": 16560,
+      "confidence": 0.9722
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 15,
+      "startMs": 16560,
+      "endMs": 16760,
+      "confidence": 0.9951
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 16,
+      "startMs": 16760,
+      "endMs": 16920,
+      "confidence": 0.9951
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 17,
+      "startMs": 16601,
+      "endMs": 16954,
+      "confidence": 0
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 18,
+      "startMs": 18500,
+      "endMs": 18680,
+      "confidence": 0.9946
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 19,
+      "startMs": 18680,
+      "endMs": 18840,
+      "confidence": 0.998
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 20,
+      "startMs": 18840,
+      "endMs": 19080,
+      "confidence": 0.9971
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 21,
+      "startMs": 19080,
+      "endMs": 19320,
+      "confidence": 0.999
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 22,
+      "startMs": 19320,
+      "endMs": 19560,
+      "confidence": 0.9985
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 23,
+      "startMs": 19560,
+      "endMs": 19980,
+      "confidence": 0.9956
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 24,
+      "startMs": 19980,
+      "endMs": 20200,
+      "confidence": 0.999
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 25,
+      "startMs": 20200,
+      "endMs": 20420,
+      "confidence": 0.9956
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 26,
+      "startMs": 20420,
+      "endMs": 20800,
+      "confidence": 0.9985
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 27,
+      "startMs": 21160,
+      "endMs": 21340,
+      "confidence": 0.9893
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 28,
+      "startMs": 21340,
+      "endMs": 21520,
+      "confidence": 0.9668
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 29,
+      "startMs": 21520,
+      "endMs": 21780,
+      "confidence": 0.9976
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 30,
+      "startMs": 21780,
+      "endMs": 22380,
+      "confidence": 0.6738
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 31,
+      "startMs": 22380,
+      "endMs": 22580,
+      "confidence": 0.9907
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 32,
+      "startMs": 22580,
+      "endMs": 22800,
+      "confidence": 0.9976
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 33,
+      "startMs": 22800,
+      "endMs": 23020,
+      "confidence": 0.9971
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 34,
+      "startMs": 23020,
+      "endMs": 23160,
+      "confidence": 0.999
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 35,
+      "startMs": 23160,
+      "endMs": 23380,
+      "confidence": 0.9985
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 36,
+      "startMs": 23380,
+      "endMs": 23640,
+      "confidence": 0.9966
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 37,
+      "startMs": 23640,
+      "endMs": 23840,
+      "confidence": 0.9136
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 38,
+      "startMs": 23840,
+      "endMs": 24140,
+      "confidence": 0.9985
+    },
+    {
+      "cueId": "declaration",
+      "wordIndex": 39,
+      "startMs": 24140,
+      "endMs": 24560,
+      "confidence": 0.999
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 0,
+      "startMs": 25100,
+      "endMs": 25360,
+      "confidence": 0.9951
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 1,
+      "startMs": 25360,
+      "endMs": 25620,
+      "confidence": 0.998
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 2,
+      "startMs": 25620,
+      "endMs": 25940,
+      "confidence": 0.9902
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 3,
+      "startMs": 25940,
+      "endMs": 26320,
+      "confidence": 0.9937
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 4,
+      "startMs": 26660,
+      "endMs": 26980,
+      "confidence": 0.9932
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 5,
+      "startMs": 26980,
+      "endMs": 27360,
+      "confidence": 0.9707
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 6,
+      "startMs": 27360,
+      "endMs": 28040,
+      "confidence": 0.6724
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 7,
+      "startMs": 28040,
+      "endMs": 28480,
+      "confidence": 0.9966
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 8,
+      "startMs": 28480,
+      "endMs": 29060,
+      "confidence": 0.9873
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 9,
+      "startMs": 29060,
+      "endMs": 29420,
+      "confidence": 0.8091
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 10,
+      "startMs": 29420,
+      "endMs": 29720,
+      "confidence": 0.9009
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 11,
+      "startMs": 29720,
+      "endMs": 30120,
+      "confidence": 0.9595
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 12,
+      "startMs": 30120,
+      "endMs": 30380,
+      "confidence": 0.9956
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 13,
+      "startMs": 30380,
+      "endMs": 30600,
+      "confidence": 0.9951
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 14,
+      "startMs": 30600,
+      "endMs": 30860,
+      "confidence": 0.96
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 15,
+      "startMs": 31340,
+      "endMs": 31460,
+      "confidence": 0.9521
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 16,
+      "startMs": 31460,
+      "endMs": 31680,
+      "confidence": 0.9814
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 17,
+      "startMs": 31680,
+      "endMs": 31940,
+      "confidence": 0.9858
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 18,
+      "startMs": 31940,
+      "endMs": 32240,
+      "confidence": 0.915
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 19,
+      "startMs": 32240,
+      "endMs": 32320,
+      "confidence": 0.9883
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 20,
+      "startMs": 32320,
+      "endMs": 32580,
+      "confidence": 0.9604
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 21,
+      "startMs": 32580,
+      "endMs": 33060,
+      "confidence": 0.426
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 22,
+      "startMs": 33680,
+      "endMs": 33820,
+      "confidence": 0.9531
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 23,
+      "startMs": 33820,
+      "endMs": 34380,
+      "confidence": 0.9937
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 24,
+      "startMs": 34380,
+      "endMs": 34700,
+      "confidence": 0.9946
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 25,
+      "startMs": 34700,
+      "endMs": 35220,
+      "confidence": 0.9546
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 26,
+      "startMs": 35220,
+      "endMs": 35700,
+      "confidence": 0.9673
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 27,
+      "startMs": 35700,
+      "endMs": 36060,
+      "confidence": 0.9844
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 28,
+      "startMs": 36060,
+      "endMs": 36320,
+      "confidence": 0.9014
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 29,
+      "startMs": 36320,
+      "endMs": 36640,
+      "confidence": 0.9424
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 30,
+      "startMs": 36640,
+      "endMs": 37200,
+      "confidence": 0.9282
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 31,
+      "startMs": 37200,
+      "endMs": 37960,
+      "confidence": 0.9243
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 32,
+      "startMs": 38220,
+      "endMs": 38420,
+      "confidence": 0.9282
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 33,
+      "startMs": 38420,
+      "endMs": 38660,
+      "confidence": 0.9854
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 34,
+      "startMs": 38660,
+      "endMs": 39160,
+      "confidence": 0.8271
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 35,
+      "startMs": 39160,
+      "endMs": 39340,
+      "confidence": 0.9912
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 36,
+      "startMs": 39340,
+      "endMs": 39600,
+      "confidence": 0.9961
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 37,
+      "startMs": 39600,
+      "endMs": 39840,
+      "confidence": 0.9971
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 38,
+      "startMs": 39840,
+      "endMs": 40080,
+      "confidence": 0.9658
+    },
+    {
+      "cueId": "parameter",
+      "wordIndex": 39,
+      "startMs": 40080,
+      "endMs": 40500,
+      "confidence": 0.9922
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 0,
+      "startMs": 40980,
+      "endMs": 41200,
+      "confidence": 0.9829
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 1,
+      "startMs": 41200,
+      "endMs": 41560,
+      "confidence": 0.8579
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 2,
+      "startMs": 41560,
+      "endMs": 41760,
+      "confidence": 0.9966
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 3,
+      "startMs": 41760,
+      "endMs": 42100,
+      "confidence": 0.998
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 4,
+      "startMs": 42380,
+      "endMs": 42560,
+      "confidence": 0.9907
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 5,
+      "startMs": 42560,
+      "endMs": 42740,
+      "confidence": 0.9912
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 6,
+      "startMs": 42740,
+      "endMs": 42960,
+      "confidence": 0.9922
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 7,
+      "startMs": 42960,
+      "endMs": 43280,
+      "confidence": 0.9634
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 8,
+      "startMs": 43280,
+      "endMs": 43480,
+      "confidence": 0.9893
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 9,
+      "startMs": 43480,
+      "endMs": 44000,
+      "confidence": 0.9824
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 10,
+      "startMs": 44000,
+      "endMs": 44280,
+      "confidence": 0.6777
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 11,
+      "startMs": 44280,
+      "endMs": 44520,
+      "confidence": 0.998
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 12,
+      "startMs": 44520,
+      "endMs": 44820,
+      "confidence": 0.9458
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 13,
+      "startMs": 45180,
+      "endMs": 45320,
+      "confidence": 0.9932
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 14,
+      "startMs": 45320,
+      "endMs": 45560,
+      "confidence": 0.9927
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 15,
+      "startMs": 45560,
+      "endMs": 45780,
+      "confidence": 0.9946
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 16,
+      "startMs": 45780,
+      "endMs": 46260,
+      "confidence": 0.9951
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 17,
+      "startMs": 46260,
+      "endMs": 46640,
+      "confidence": 0.9976
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 18,
+      "startMs": 46640,
+      "endMs": 46840,
+      "confidence": 0.9985
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 19,
+      "startMs": 46840,
+      "endMs": 47040,
+      "confidence": 0.9927
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 20,
+      "startMs": 47040,
+      "endMs": 47300,
+      "confidence": 0.9966
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 21,
+      "startMs": 47760,
+      "endMs": 47980,
+      "confidence": 0.9956
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 22,
+      "startMs": 47980,
+      "endMs": 48200,
+      "confidence": 0.9951
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 23,
+      "startMs": 48200,
+      "endMs": 48600,
+      "confidence": 0.9028
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 24,
+      "startMs": 48600,
+      "endMs": 48860,
+      "confidence": 0.9907
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 25,
+      "startMs": 48860,
+      "endMs": 49120,
+      "confidence": 0.9902
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 26,
+      "startMs": 48637,
+      "endMs": 48943,
+      "confidence": 0
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 27,
+      "startMs": 49340,
+      "endMs": 49660,
+      "confidence": 0.9922
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 28,
+      "startMs": 49660,
+      "endMs": 49940,
+      "confidence": 0.999
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 29,
+      "startMs": 49940,
+      "endMs": 50360,
+      "confidence": 0.9775
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 30,
+      "startMs": 50780,
+      "endMs": 50960,
+      "confidence": 0.9961
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 31,
+      "startMs": 50960,
+      "endMs": 51180,
+      "confidence": 0.9961
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 32,
+      "startMs": 51180,
+      "endMs": 51420,
+      "confidence": 0.9722
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 33,
+      "startMs": 51420,
+      "endMs": 51660,
+      "confidence": 0.9785
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 34,
+      "startMs": 51660,
+      "endMs": 51860,
+      "confidence": 0.9971
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 35,
+      "startMs": 51860,
+      "endMs": 52040,
+      "confidence": 0.9785
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 36,
+      "startMs": 52040,
+      "endMs": 52200,
+      "confidence": 0.998
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 37,
+      "startMs": 52200,
+      "endMs": 52400,
+      "confidence": 0.9629
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 38,
+      "startMs": 52400,
+      "endMs": 52620,
+      "confidence": 0.9956
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 39,
+      "startMs": 52620,
+      "endMs": 52780,
+      "confidence": 0.9946
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 40,
+      "startMs": 52780,
+      "endMs": 53000,
+      "confidence": 0.9888
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 41,
+      "startMs": 53000,
+      "endMs": 53280,
+      "confidence": 0.998
+    },
+    {
+      "cueId": "return-type",
+      "wordIndex": 42,
+      "startMs": 53280,
+      "endMs": 53720,
+      "confidence": 0.9976
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 0,
+      "startMs": 54120,
+      "endMs": 54360,
+      "confidence": 0.9927
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 1,
+      "startMs": 54360,
+      "endMs": 54720,
+      "confidence": 0.8711
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 2,
+      "startMs": 54720,
+      "endMs": 54920,
+      "confidence": 0.9775
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 3,
+      "startMs": 54920,
+      "endMs": 55080,
+      "confidence": 0.999
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 4,
+      "startMs": 55080,
+      "endMs": 55280,
+      "confidence": 0.9897
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 5,
+      "startMs": 55280,
+      "endMs": 55520,
+      "confidence": 0.998
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 6,
+      "startMs": 55520,
+      "endMs": 55880,
+      "confidence": 0.9971
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 7,
+      "startMs": 55880,
+      "endMs": 56300,
+      "confidence": 0.3992
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 8,
+      "startMs": 56300,
+      "endMs": 56480,
+      "confidence": 0.791
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 9,
+      "startMs": 56480,
+      "endMs": 56740,
+      "confidence": 0.9692
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 10,
+      "startMs": 56740,
+      "endMs": 57020,
+      "confidence": 0.959
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 11,
+      "startMs": 57020,
+      "endMs": 57340,
+      "confidence": 0.8325
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 12,
+      "startMs": 57340,
+      "endMs": 57660,
+      "confidence": 0.4734
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 13,
+      "startMs": 57660,
+      "endMs": 58020,
+      "confidence": 0.8389
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 14,
+      "startMs": 58020,
+      "endMs": 58200,
+      "confidence": 0.9897
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 15,
+      "startMs": 58200,
+      "endMs": 58440,
+      "confidence": 0.9517
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 16,
+      "startMs": 58440,
+      "endMs": 58720,
+      "confidence": 0.8018
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 17,
+      "startMs": 58720,
+      "endMs": 58980,
+      "confidence": 0.9463
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 18,
+      "startMs": 58980,
+      "endMs": 59520,
+      "confidence": 0.9985
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 19,
+      "startMs": 60040,
+      "endMs": 60200,
+      "confidence": 0.9219
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 20,
+      "startMs": 60200,
+      "endMs": 60460,
+      "confidence": 0.9976
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 21,
+      "startMs": 60460,
+      "endMs": 60720,
+      "confidence": 0.2805
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 22,
+      "startMs": 60920,
+      "endMs": 61060,
+      "confidence": 0.9619
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 23,
+      "startMs": 61060,
+      "endMs": 61300,
+      "confidence": 0.9912
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 24,
+      "startMs": 61420,
+      "endMs": 61600,
+      "confidence": 0.9829
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 25,
+      "startMs": 61600,
+      "endMs": 61780,
+      "confidence": 0.9521
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 26,
+      "startMs": 61780,
+      "endMs": 62100,
+      "confidence": 0.9951
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 27,
+      "startMs": 62500,
+      "endMs": 62840,
+      "confidence": 0.9834
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 28,
+      "startMs": 62840,
+      "endMs": 63020,
+      "confidence": 0.9922
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 29,
+      "startMs": 63020,
+      "endMs": 63200,
+      "confidence": 0.7949
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 30,
+      "startMs": 63200,
+      "endMs": 63680,
+      "confidence": 0.979
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 31,
+      "startMs": 63840,
+      "endMs": 64120,
+      "confidence": 0.9917
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 32,
+      "startMs": 64120,
+      "endMs": 64340,
+      "confidence": 0.9951
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 33,
+      "startMs": 64340,
+      "endMs": 64700,
+      "confidence": 0.998
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 34,
+      "startMs": 65040,
+      "endMs": 65160,
+      "confidence": 0.9917
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 35,
+      "startMs": 65160,
+      "endMs": 65420,
+      "confidence": 0.9932
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 36,
+      "startMs": 65420,
+      "endMs": 65600,
+      "confidence": 0.9941
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 37,
+      "startMs": 65600,
+      "endMs": 65900,
+      "confidence": 0.9595
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 38,
+      "startMs": 65900,
+      "endMs": 66180,
+      "confidence": 0.9653
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 39,
+      "startMs": 66760,
+      "endMs": 66920,
+      "confidence": 0.96
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 40,
+      "startMs": 66920,
+      "endMs": 67220,
+      "confidence": 0.9966
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 41,
+      "startMs": 67220,
+      "endMs": 67420,
+      "confidence": 0.998
+    },
+    {
+      "cueId": "function-body",
+      "wordIndex": 42,
+      "startMs": 67420,
+      "endMs": 67780,
+      "confidence": 0.9966
+    },
+    {
+      "cueId": "review",
+      "wordIndex": 0,
+      "startMs": 68120,
+      "endMs": 68320,
+      "confidence": 0.9868
+    },
+    {
+      "cueId": "review",
+      "wordIndex": 1,
+      "startMs": 68320,
+      "endMs": 68540,
+      "confidence": 0.9932
+    },
+    {
+      "cueId": "review",
+      "wordIndex": 2,
+      "startMs": 68540,
+      "endMs": 68900,
+      "confidence": 0.9937
+    },
+    {
+      "cueId": "review",
+      "wordIndex": 3,
+      "startMs": 68900,
+      "endMs": 69140,
+      "confidence": 0.9897
+    },
+    {
+      "cueId": "review",
+      "wordIndex": 4,
+      "startMs": 69140,
+      "endMs": 69340,
+      "confidence": 0.9941
+    },
+    {
+      "cueId": "review",
+      "wordIndex": 5,
+      "startMs": 69340,
+      "endMs": 69540,
+      "confidence": 0.9941
+    },
+    {
+      "cueId": "review",
+      "wordIndex": 6,
+      "startMs": 69540,
+      "endMs": 69760,
+      "confidence": 0.9985
+    },
+    {
+      "cueId": "review",
+      "wordIndex": 7,
+      "startMs": 70226,
+      "endMs": 70556,
+      "confidence": 0
+    },
+    {
+      "cueId": "review",
+      "wordIndex": 8,
+      "startMs": 70780,
+      "endMs": 71140,
+      "confidence": 0.9844
+    },
+    {
+      "cueId": "review",
+      "wordIndex": 9,
+      "startMs": 71140,
+      "endMs": 71440,
+      "confidence": 0.9697
+    },
+    {
+      "cueId": "review",
+      "wordIndex": 10,
+      "startMs": 71440,
+      "endMs": 71640,
+      "confidence": 0.9946
+    },
+    {
+      "cueId": "review",
+      "wordIndex": 11,
+      "startMs": 71640,
+      "endMs": 71840,
+      "confidence": 0.896
+    },
+    {
+      "cueId": "review",
+      "wordIndex": 12,
+      "startMs": 71840,
+      "endMs": 72180,
+      "confidence": 0.9971
+    },
+    {
+      "cueId": "review",
+      "wordIndex": 13,
+      "startMs": 72180,
+      "endMs": 72480,
+      "confidence": 0.9951
+    },
+    {
+      "cueId": "review",
+      "wordIndex": 14,
+      "startMs": 72480,
+      "endMs": 72700,
+      "confidence": 0.9961
+    },
+    {
+      "cueId": "review",
+      "wordIndex": 15,
+      "startMs": 73120,
+      "endMs": 73240,
+      "confidence": 0.9951
+    },
+    {
+      "cueId": "review",
+      "wordIndex": 16,
+      "startMs": 73240,
+      "endMs": 73480,
+      "confidence": 0.9951
+    },
+    {
+      "cueId": "review",
+      "wordIndex": 17,
+      "startMs": 73480,
+      "endMs": 73960,
+      "confidence": 0.9971
+    },
+    {
+      "cueId": "review",
+      "wordIndex": 18,
+      "startMs": 73960,
+      "endMs": 74360,
+      "confidence": 0.9761
+    },
+    {
+      "cueId": "review",
+      "wordIndex": 19,
+      "startMs": 74360,
+      "endMs": 74660,
+      "confidence": 0.9878
+    },
+    {
+      "cueId": "review",
+      "wordIndex": 20,
+      "startMs": 74660,
+      "endMs": 74840,
+      "confidence": 0.9956
+    },
+    {
+      "cueId": "review",
+      "wordIndex": 21,
+      "startMs": 74840,
+      "endMs": 75120,
+      "confidence": 0.9893
+    },
+    {
+      "cueId": "review",
+      "wordIndex": 22,
+      "startMs": 75120,
+      "endMs": 75280,
+      "confidence": 0.8853
+    },
+    {
+      "cueId": "review",
+      "wordIndex": 23,
+      "startMs": 75280,
+      "endMs": 75680,
+      "confidence": 0.9966
+    },
+    {
+      "cueId": "review",
+      "wordIndex": 24,
+      "startMs": 76040,
+      "endMs": 76240,
+      "confidence": 0.9951
+    },
+    {
+      "cueId": "review",
+      "wordIndex": 25,
+      "startMs": 76240,
+      "endMs": 76460,
+      "confidence": 0.8105
+    },
+    {
+      "cueId": "review",
+      "wordIndex": 26,
+      "startMs": 76560,
+      "endMs": 76680,
+      "confidence": 0.998
+    },
+    {
+      "cueId": "review",
+      "wordIndex": 27,
+      "startMs": 76680,
+      "endMs": 76960,
+      "confidence": 0.9976
+    },
+    {
+      "cueId": "review",
+      "wordIndex": 28,
+      "startMs": 76960,
+      "endMs": 77440,
+      "confidence": 0.998
+    },
+    {
+      "cueId": "review",
+      "wordIndex": 29,
+      "startMs": 77440,
+      "endMs": 77700,
+      "confidence": 0.6318
+    },
+    {
+      "cueId": "review",
+      "wordIndex": 30,
+      "startMs": 77700,
+      "endMs": 78060,
+      "confidence": 0.8662
+    },
+    {
+      "cueId": "review",
+      "wordIndex": 31,
+      "startMs": 78060,
+      "endMs": 78380,
+      "confidence": 0.9521
+    },
+    {
+      "cueId": "review",
+      "wordIndex": 32,
+      "startMs": 78680,
+      "endMs": 78880,
+      "confidence": 0.9805
+    },
+    {
+      "cueId": "review",
+      "wordIndex": 33,
+      "startMs": 78793,
+      "endMs": 79122,
+      "confidence": 0
+    },
+    {
+      "cueId": "review",
+      "wordIndex": 34,
+      "startMs": 79160,
+      "endMs": 79460,
+      "confidence": 0.834
+    },
+    {
+      "cueId": "review",
+      "wordIndex": 35,
+      "startMs": 79460,
+      "endMs": 79680,
+      "confidence": 0.9902
+    },
+    {
+      "cueId": "review",
+      "wordIndex": 36,
+      "startMs": 79781,
+      "endMs": 80111,
+      "confidence": 0
+    },
+    {
+      "cueId": "review",
+      "wordIndex": 37,
+      "startMs": 79900,
+      "endMs": 80280,
+      "confidence": 0.9824
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 0,
+      "startMs": 80660,
+      "endMs": 80840,
+      "confidence": 0.9937
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 1,
+      "startMs": 80840,
+      "endMs": 80940,
+      "confidence": 0.875
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 2,
+      "startMs": 80940,
+      "endMs": 81060,
+      "confidence": 0.9731
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 3,
+      "startMs": 81060,
+      "endMs": 81240,
+      "confidence": 0.9976
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 4,
+      "startMs": 81240,
+      "endMs": 81420,
+      "confidence": 0.9971
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 5,
+      "startMs": 81680,
+      "endMs": 81820,
+      "confidence": 0.9941
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 6,
+      "startMs": 81820,
+      "endMs": 82000,
+      "confidence": 0.9985
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 7,
+      "startMs": 82000,
+      "endMs": 82280,
+      "confidence": 0.9399
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 8,
+      "startMs": 82280,
+      "endMs": 82480,
+      "confidence": 0.7192
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 9,
+      "startMs": 82480,
+      "endMs": 82720,
+      "confidence": 0.9961
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 10,
+      "startMs": 82720,
+      "endMs": 83260,
+      "confidence": 0.9941
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 11,
+      "startMs": 83260,
+      "endMs": 83540,
+      "confidence": 0.8418
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 12,
+      "startMs": 83540,
+      "endMs": 83760,
+      "confidence": 0.9912
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 13,
+      "startMs": 83760,
+      "endMs": 83940,
+      "confidence": 0.9536
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 14,
+      "startMs": 83940,
+      "endMs": 84200,
+      "confidence": 0.9653
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 15,
+      "startMs": 84200,
+      "endMs": 84720,
+      "confidence": 0.998
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 16,
+      "startMs": 85220,
+      "endMs": 85560,
+      "confidence": 0.9907
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 17,
+      "startMs": 85560,
+      "endMs": 85720,
+      "confidence": 0.9956
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 18,
+      "startMs": 85720,
+      "endMs": 86000,
+      "confidence": 0.9956
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 19,
+      "startMs": 86000,
+      "endMs": 86200,
+      "confidence": 0.9966
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 20,
+      "startMs": 86200,
+      "endMs": 86360,
+      "confidence": 0.9976
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 21,
+      "startMs": 86360,
+      "endMs": 86540,
+      "confidence": 0.9985
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 22,
+      "startMs": 86540,
+      "endMs": 86800,
+      "confidence": 0.9775
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 23,
+      "startMs": 86800,
+      "endMs": 87300,
+      "confidence": 0.9966
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 24,
+      "startMs": 87700,
+      "endMs": 87800,
+      "confidence": 0.9692
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 25,
+      "startMs": 87800,
+      "endMs": 88080,
+      "confidence": 0.9048
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 26,
+      "startMs": 88080,
+      "endMs": 88420,
+      "confidence": 0.9873
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 27,
+      "startMs": 88420,
+      "endMs": 88740,
+      "confidence": 0.5073
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 28,
+      "startMs": 88740,
+      "endMs": 89000,
+      "confidence": 0.9761
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 29,
+      "startMs": 89000,
+      "endMs": 89440,
+      "confidence": 0.9858
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 30,
+      "startMs": 89920,
+      "endMs": 90200,
+      "confidence": 0.9941
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 31,
+      "startMs": 90200,
+      "endMs": 90440,
+      "confidence": 0.9971
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 32,
+      "startMs": 90440,
+      "endMs": 90640,
+      "confidence": 0.9814
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 33,
+      "startMs": 90640,
+      "endMs": 90880,
+      "confidence": 0.9946
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 34,
+      "startMs": 90595,
+      "endMs": 90893,
+      "confidence": 0
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 35,
+      "startMs": 91020,
+      "endMs": 91200,
+      "confidence": 0.9819
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 36,
+      "startMs": 91200,
+      "endMs": 91420,
+      "confidence": 0.9746
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 37,
+      "startMs": 91640,
+      "endMs": 91800,
+      "confidence": 0.9941
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 38,
+      "startMs": 91800,
+      "endMs": 92040,
+      "confidence": 0.9971
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 39,
+      "startMs": 92040,
+      "endMs": 92260,
+      "confidence": 0.998
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 40,
+      "startMs": 92380,
+      "endMs": 92540,
+      "confidence": 0.9922
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 41,
+      "startMs": 92540,
+      "endMs": 92680,
+      "confidence": 0.9971
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 42,
+      "startMs": 92680,
+      "endMs": 92920,
+      "confidence": 0.9961
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 43,
+      "startMs": 93283,
+      "endMs": 93581,
+      "confidence": 0
+    },
+    {
+      "cueId": "recreate",
+      "wordIndex": 44,
+      "startMs": 93140,
+      "endMs": 93420,
+      "confidence": 0.9883
+    },
+    {
+      "cueId": "next-lesson",
+      "wordIndex": 0,
+      "startMs": 94120,
+      "endMs": 94360,
+      "confidence": 0.9849
+    },
+    {
+      "cueId": "next-lesson",
+      "wordIndex": 1,
+      "startMs": 94360,
+      "endMs": 94600,
+      "confidence": 0.9971
+    },
+    {
+      "cueId": "next-lesson",
+      "wordIndex": 2,
+      "startMs": 94980,
+      "endMs": 95140,
+      "confidence": 0.9966
+    },
+    {
+      "cueId": "next-lesson",
+      "wordIndex": 3,
+      "startMs": 95140,
+      "endMs": 95480,
+      "confidence": 0.9863
+    },
+    {
+      "cueId": "next-lesson",
+      "wordIndex": 4,
+      "startMs": 95480,
+      "endMs": 95720,
+      "confidence": 0.9106
+    },
+    {
+      "cueId": "next-lesson",
+      "wordIndex": 5,
+      "startMs": 95720,
+      "endMs": 95900,
+      "confidence": 0.9888
+    },
+    {
+      "cueId": "next-lesson",
+      "wordIndex": 6,
+      "startMs": 95900,
+      "endMs": 96260,
+      "confidence": 0.9971
+    },
+    {
+      "cueId": "next-lesson",
+      "wordIndex": 7,
+      "startMs": 96260,
+      "endMs": 96520,
+      "confidence": 0.5205
+    },
+    {
+      "cueId": "next-lesson",
+      "wordIndex": 8,
+      "startMs": 96520,
+      "endMs": 96620,
+      "confidence": 0.7617
+    },
+    {
+      "cueId": "next-lesson",
+      "wordIndex": 9,
+      "startMs": 96620,
+      "endMs": 96840,
+      "confidence": 0.9253
+    },
+    {
+      "cueId": "next-lesson",
+      "wordIndex": 10,
+      "startMs": 96840,
+      "endMs": 97220,
+      "confidence": 0.9966
+    },
+    {
+      "cueId": "next-lesson",
+      "wordIndex": 11,
+      "startMs": 97840,
+      "endMs": 98100,
+      "confidence": 0.9985
+    },
+    {
+      "cueId": "next-lesson",
+      "wordIndex": 12,
+      "startMs": 98220,
+      "endMs": 98260,
+      "confidence": 0.9976
+    },
+    {
+      "cueId": "next-lesson",
+      "wordIndex": 13,
+      "startMs": 98260,
+      "endMs": 98400,
+      "confidence": 0.9927
+    },
+    {
+      "cueId": "next-lesson",
+      "wordIndex": 14,
+      "startMs": 98400,
+      "endMs": 98540,
+      "confidence": 0.9985
+    },
+    {
+      "cueId": "next-lesson",
+      "wordIndex": 15,
+      "startMs": 98540,
+      "endMs": 98800,
+      "confidence": 0.9951
+    },
+    {
+      "cueId": "next-lesson",
+      "wordIndex": 16,
+      "startMs": 98800,
+      "endMs": 99100,
+      "confidence": 0.9849
+    },
+    {
+      "cueId": "next-lesson",
+      "wordIndex": 17,
+      "startMs": 99100,
+      "endMs": 99320,
+      "confidence": 0.9956
+    },
+    {
+      "cueId": "next-lesson",
+      "wordIndex": 18,
+      "startMs": 99320,
+      "endMs": 99480,
+      "confidence": 0.9766
+    },
+    {
+      "cueId": "next-lesson",
+      "wordIndex": 19,
+      "startMs": 99480,
+      "endMs": 99640,
+      "confidence": 0.7207
+    },
+    {
+      "cueId": "next-lesson",
+      "wordIndex": 20,
+      "startMs": 99640,
+      "endMs": 100080,
+      "confidence": 0.9648
+    },
+    {
+      "cueId": "next-lesson",
+      "wordIndex": 21,
+      "startMs": 100320,
+      "endMs": 100560,
+      "confidence": 0.9961
+    },
+    {
+      "cueId": "next-lesson",
+      "wordIndex": 22,
+      "startMs": 100560,
+      "endMs": 100720,
+      "confidence": 0.9429
+    },
+    {
+      "cueId": "next-lesson",
+      "wordIndex": 23,
+      "startMs": 100720,
+      "endMs": 100860,
+      "confidence": 0.8672
+    },
+    {
+      "cueId": "next-lesson",
+      "wordIndex": 24,
+      "startMs": 100860,
+      "endMs": 101100,
+      "confidence": 0.9849
+    },
+    {
+      "cueId": "next-lesson",
+      "wordIndex": 25,
+      "startMs": 101100,
+      "endMs": 101440,
+      "confidence": 0.9756
+    },
+    {
+      "cueId": "next-lesson",
+      "wordIndex": 26,
+      "startMs": 101440,
+      "endMs": 101700,
+      "confidence": 0.7051
+    },
+    {
+      "cueId": "next-lesson",
+      "wordIndex": 27,
+      "startMs": 101700,
+      "endMs": 101880,
+      "confidence": 0.9985
+    },
+    {
+      "cueId": "next-lesson",
+      "wordIndex": 28,
+      "startMs": 101880,
+      "endMs": 102140,
+      "confidence": 0.9985
+    },
+    {
+      "cueId": "next-lesson",
+      "wordIndex": 29,
+      "startMs": 102034,
+      "endMs": 102315,
+      "confidence": 0
+    },
+    {
+      "cueId": "next-lesson",
+      "wordIndex": 30,
+      "startMs": 102300,
+      "endMs": 102580,
+      "confidence": 0.9941
+    },
+    {
+      "cueId": "next-lesson",
+      "wordIndex": 31,
+      "startMs": 102580,
+      "endMs": 102740,
+      "confidence": 0.979
+    },
+    {
+      "cueId": "next-lesson",
+      "wordIndex": 32,
+      "startMs": 102740,
+      "endMs": 102900,
+      "confidence": 0.9995
+    },
+    {
+      "cueId": "next-lesson",
+      "wordIndex": 33,
+      "startMs": 102900,
+      "endMs": 103180,
+      "confidence": 0.9946
+    }
+  ]
+}

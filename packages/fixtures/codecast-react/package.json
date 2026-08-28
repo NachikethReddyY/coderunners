@@ -22,7 +22,8 @@
     "build": "tsc -p tsconfig.json",
     "check": "tsc -p tsconfig.json --noEmit",
     "dev": "pnpm --dir workspace dev",
-    "fixture:audio": "node scripts/generate-audio.mjs",
+    "fixture:audio": "pnpm --filter @coderunners/contracts build && node scripts/generate-audio.mjs",
+    "fixture:compile": "pnpm --filter @coderunners/contracts build && node scripts/generate-audio.mjs --reuse-audio",
     "test": "vitest run --passWithNoTests"
   },
   "devDependencies": {

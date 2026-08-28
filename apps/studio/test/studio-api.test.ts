@@ -48,4 +48,51 @@ describe("Studio loopback client", () => {
     const request = fetchImplementation.mock.calls[0]?.[1];
     expect(request?.body).toBe(JSON.stringify({ id: "react-habit-toggle" }));
   });
+
+  it("invokes the browser fetch function without rebinding its receiver", async () => {
+    let receiver: unknown = "not called";
+    async function fetchImplementation(this: unknown): Promise<Response> {
+      receiver = this;
+      return new Response(
+        JSON.stringify({
+          status: "ok",
+          capabilities: { files: true, pty: true, codecastGeneration: true },
+        }),
+        { status: 200, headers: { "content-type": "application/json" } },
+      );
+    }
+    const client = new StudioApiClient(
+      "http://127.0.0.1:43110",
+      "launch-secret",
+      fetchImplementation,
+    );
+
+    await client.health();
+
+    expect(receiver).toBeUndefined();
+  });
+
+  it("requests lazy project directory listings through the confined file API", async () => {
+    const fetchImplementation = vi.fn().mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          path: "src",
+          entries: [{ kind: "file", name: "index.ts", path: "src/index.ts" }],
+        }),
+        { status: 200, headers: { "content-type": "application/json" } },
+      ),
+    );
+    const client = new StudioApiClient(
+      "http://127.0.0.1:43110",
+      "launch-secret",
+      fetchImplementation,
+    );
+
+    await client.listDirectory("src");
+
+    expect(fetchImplementation).toHaveBeenCalledWith(
+      "http://127.0.0.1:43110/api/files/directory?path=src",
+      expect.any(Object),
+    );
+  });
 });

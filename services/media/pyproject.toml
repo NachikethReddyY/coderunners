@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=78"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "coderunners-media"
+version = "0.1.0"
+description = "Local JSONL media sidecar for CodeRunners"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+  "en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl",
+  "misaki[en]==0.9.4",
+  "mlx-audio==0.5.0",
+  "mlx-whisper==0.4.3",
+  "numpy>=1.26.4",
+]
+
+[project.scripts]
+coderunners-media = "coderunners_media.worker:main"
+
+[dependency-groups]
+dev = ["ruff==0.16.4"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]

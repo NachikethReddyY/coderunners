@@ -1,90 +1,228 @@
 {
   "schemaVersion": 1,
-  "id": "react-habit-toggle",
-  "title": "Build a habit toggle",
+  "id": "typescript-habit-label",
+  "title": "Build a typed function",
   "project": {
     "name": "habit-tracker",
-    "entryFile": "src/components/HabitRow.tsx",
+    "entryFile": "src/formatHabitLabel.ts",
     "commands": {
       "dev": {
         "executable": "pnpm",
-        "args": ["dev"]
+        "args": [
+          "dev"
+        ]
       },
       "check": {
         "executable": "pnpm",
-        "args": ["test", "toggle-habit"]
+        "args": [
+          "test"
+        ]
       }
     }
   },
   "audio": {
     "src": "audio/codecast.wav",
     "format": "pcm-wav",
-    "durationMs": 70000
+    "durationMs": 103440
   },
   "cues": [
     {
       "id": "intro",
-      "text": "Open HabitRow and trace how a click changes the completed state.",
+      "text": "Let us build a TypeScript function from an empty file. It will take a habit name and turn it into a consistent label. Watch the structure first. After the walkthrough, the editor will reset and you will recreate the function yourself.",
       "startMs": 0,
-      "endMs": 15000
+      "endMs": 10600
     },
     {
-      "id": "challenge",
-      "text": "Implement the toggle, then prove it with the focused test.",
-      "startMs": 15000,
-      "endMs": 70000
+      "id": "declaration",
+      "text": "Start with the keywords export function. Export lets another file import this behavior. Then type the name formatHabitLabel. The name keeps the function focused on one job. Add an opening parenthesis to begin the list of inputs the function needs.",
+      "startMs": 10600,
+      "endMs": 24720
+    },
+    {
+      "id": "parameter",
+      "text": "Inside the input list, type name. This parameter represents habit text supplied by a caller. Add a colon and the word string. That annotation makes TypeScript accept text and powers useful IntelliSense. Close the parenthesis to finish the input list.",
+      "startMs": 24720,
+      "endMs": 40680
+    },
+    {
+      "id": "return-type",
+      "text": "Now describe the output. Add a colon after the parenthesis, followed by string. The first string annotation belongs to the input. The second promises that the returned value is text. Open the function body with a brace and move to an indented line.",
+      "startMs": 40680,
+      "endMs": 53840
+    },
+    {
+      "id": "function-body",
+      "text": "Type return to send a value back. Use a template string so fixed text and the parameter stay together. Begin with Habit, a colon, and a space. Insert the name parameter, finish the statement, and close the function body. The function is complete.",
+      "startMs": 53840,
+      "endMs": 67920
+    },
+    {
+      "id": "review",
+      "text": "Read the signature from left to right. formatHabitLabel receives one string and returns one string. The body combines fixed text with the supplied value. For Read, the result is Habit colon Read. The focused test checks that contract.",
+      "startMs": 67920,
+      "endMs": 80440
+    },
+    {
+      "id": "recreate",
+      "text": "Now it is your turn. At the checkpoint, the demo disappears and your starter file returns. Recreate the function with the same typed parameter, typed return value, and label format. Include the supplied name in the result. Save your work, then run the focused check.",
+      "startMs": 80440,
+      "endMs": 93880
+    },
+    {
+      "id": "next-lesson",
+      "text": "Nice work. You recreated a typed function and proved its behavior. Next, we will call this formatter from a React component, pass a habit through props, and show the returned label in the interface.",
+      "startMs": 93880,
+      "endMs": 103440
     }
   ],
   "events": [
     {
-      "id": "open-row",
+      "id": "open-demo",
       "type": "editor.open",
-      "atMs": 2500,
-      "path": "src/components/HabitRow.tsx"
+      "path": "src/formatHabitLabel.ts",
+      "atMs": 900
     },
     {
-      "id": "focus-toggle",
+      "id": "type-function-keyword",
+      "type": "demo.patch",
+      "path": "lesson/formatHabitLabel.demo.ts",
+      "patch": "export function ",
+      "atMs": 11780,
+      "endMs": 12960
+    },
+    {
+      "id": "type-function-name",
+      "type": "demo.patch",
+      "path": "lesson/formatHabitLabel.demo.ts",
+      "patch": "export function formatHabitLabel",
+      "atMs": 16320,
+      "endMs": 16954
+    },
+    {
+      "id": "type-open-parenthesis",
+      "type": "demo.patch",
+      "path": "lesson/formatHabitLabel.demo.ts",
+      "patch": "export function formatHabitLabel(",
+      "atMs": 21520,
+      "endMs": 22380
+    },
+    {
+      "id": "type-parameter-name",
+      "type": "demo.patch",
+      "path": "lesson/formatHabitLabel.demo.ts",
+      "patch": "export function formatHabitLabel(name",
+      "atMs": 26660,
+      "endMs": 27360
+    },
+    {
+      "id": "type-parameter-type",
+      "type": "demo.patch",
+      "path": "lesson/formatHabitLabel.demo.ts",
+      "patch": "export function formatHabitLabel(name: string",
+      "atMs": 32320,
+      "endMs": 33060
+    },
+    {
+      "id": "focus-parameter-type",
       "type": "editor.focusRange",
-      "atMs": 8000,
-      "path": "src/components/HabitRow.tsx",
+      "path": "src/formatHabitLabel.ts",
       "range": {
-        "start": { "line": 12, "column": 3 },
-        "end": { "line": 14, "column": 8 }
-      }
+        "start": {
+          "line": 1,
+          "column": 40
+        },
+        "end": {
+          "line": 1,
+          "column": 46
+        }
+      },
+      "atMs": 36640
     },
     {
-      "id": "start-toggle",
+      "id": "type-close-parenthesis",
+      "type": "demo.patch",
+      "path": "lesson/formatHabitLabel.demo.ts",
+      "patch": "export function formatHabitLabel(name: string)",
+      "atMs": 38220,
+      "endMs": 39160
+    },
+    {
+      "id": "type-return-type",
+      "type": "demo.patch",
+      "path": "lesson/formatHabitLabel.demo.ts",
+      "patch": "export function formatHabitLabel(name: string): string",
+      "atMs": 44000,
+      "endMs": 44820
+    },
+    {
+      "id": "type-function-body",
+      "type": "demo.patch",
+      "path": "lesson/formatHabitLabel.demo.ts",
+      "patch": "export function formatHabitLabel(name: string): string {\n  ",
+      "atMs": 51180,
+      "endMs": 52200
+    },
+    {
+      "id": "type-return-keyword",
+      "type": "demo.patch",
+      "path": "lesson/formatHabitLabel.demo.ts",
+      "patch": "export function formatHabitLabel(name: string): string {\n  return ",
+      "atMs": 54120,
+      "endMs": 54720
+    },
+    {
+      "id": "type-label-prefix",
+      "type": "demo.patch",
+      "path": "lesson/formatHabitLabel.demo.ts",
+      "patch": "export function formatHabitLabel(name: string): string {\n  return `Habit: ",
+      "atMs": 60460,
+      "endMs": 62100
+    },
+    {
+      "id": "type-name-interpolation",
+      "type": "demo.patch",
+      "path": "lesson/formatHabitLabel.demo.ts",
+      "patch": "export function formatHabitLabel(name: string): string {\n  return `Habit: ${name}",
+      "atMs": 62500,
+      "endMs": 63680
+    },
+    {
+      "id": "type-finish-statement",
+      "type": "demo.patch",
+      "path": "lesson/formatHabitLabel.demo.ts",
+      "patch": "export function formatHabitLabel(name: string): string {\n  return `Habit: ${name}`;",
+      "atMs": 63840,
+      "endMs": 64700
+    },
+    {
+      "id": "type-close-function",
+      "type": "demo.patch",
+      "path": "lesson/formatHabitLabel.demo.ts",
+      "patch": "export function formatHabitLabel(name: string): string {\n  return `Habit: ${name}`;\n}\n",
+      "atMs": 65160,
+      "endMs": 66180
+    },
+    {
+      "id": "start-try-it",
       "type": "challenge.start",
-      "atMs": 15000,
-      "challengeId": "toggle-habit"
-    },
-    {
-      "id": "preview-result",
-      "type": "preview.show",
-      "atMs": 65000,
-      "url": "/"
-    },
-    {
-      "id": "complete-toggle",
-      "type": "challenge.complete",
-      "atMs": 69000,
-      "challengeId": "toggle-habit"
+      "challengeId": "format-habit-label",
+      "atMs": 93420
     }
   ],
   "challenges": [
     {
-      "id": "toggle-habit",
-      "title": "Toggle the selected habit",
-      "instruction": "Update the learner-owned seam so clicking a row toggles its completed state.",
+      "id": "format-habit-label",
+      "title": "Recreate the function",
+      "instruction": "Recreate the demonstrated typed function so a habit name becomes a label beginning with Habit, a colon, and one space.",
       "seam": {
-        "path": "src/components/HabitRow.tsx",
-        "startLine": 12,
-        "endLine": 14
+        "path": "src/formatHabitLabel.ts",
+        "startLine": 1,
+        "endLine": 5
       },
       "hints": [
-        "Find the state transition triggered by the row click.",
-        "The next value depends on the current completed value.",
-        "Call the supplied change handler with the opposite completed value."
+        "Start with an exported named function and give its input and output explicit text types.",
+        "Use the supplied habit name when you build the returned label.",
+        "The fixed prefix contains the word Habit, a colon, and one space."
       ],
       "checkCommandId": "check"
     }
