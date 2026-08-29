@@ -1,5 +1,49 @@
 # TODO
 
+## 2026-08-29 — Home visual correction
+
+- [x] Encode the accepted Home composition in a focused UI contract test.
+- [x] Recompose the Home prompt, project selection, controls, and attached workspace bar without changing its bindings.
+- [x] Reconcile the current shared backend/frontend diff against the required routes, state actions, player checkpoint behavior, and protected filesystem/security invariants.
+- [x] Add focused regression coverage for project-picker keyboard/focus behavior, progress/interrupted collection actions, replay completion persistence, and narrow Home composition.
+- [x] Implement the smallest corrections needed for the complete Home → collection → player → delete → Settings → history journey.
+- [x] Run contracts, Local Host, Studio, player, media, conformance, typecheck, build, and `git diff --check` proof.
+- [x] Verify desktop and 390px Home behavior against the Postplan reference and store visual evidence.
+- [x] Capture desktop Home, open picker, 390px Home, collection, player, and Settings screenshots plus a concise `.evidence/` verification report.
+
+## 2026-08-29 — Project library backend foundation
+
+- [x] Confirm the repository, branch, shared worktree state, local instructions, and existing host/contracts entry points.
+- [x] Read the Postplan workflow and extract the persistent records, API surface, states, and protected invariants.
+- [x] Define shared Project, Codecast, model configuration, branch, workspace, replay, and API response contracts.
+- [x] Write focused failing contract, registry, filesystem-boundary, branch/worktree, and HTTP API tests.
+- [x] Implement the persistent project/Codecast/model registry with atomic app-owned storage.
+- [x] Implement canonical project approval, branch discovery/validation, and app-owned worktree selection.
+- [x] Add authenticated create/list/replay/delete and model-settings endpoints without changing Studio visuals.
+- [x] Run focused tests and package type checks, then document frontend endpoints, state transitions, and limitations.
+- [x] Define the linked generation, replay payload, artifact envelope, and narrow checkpoint contracts.
+- [x] Add failing lifecycle tests for success, failure, interruption, idempotency, restart, artifact tampering, checkpointing, deletion races, and player loading.
+- [x] Persist project/Codecast/job identity linkage and reconcile it safely after restart.
+- [x] Finalize generated drafts through the existing media/compiler contracts into validated app-owned bundles.
+- [x] Serve routed replay manifests/audio and persist Resume, Replay, and completion checkpoints without weakening hard gates.
+- [x] Verify focused and regression suites, builds/type checks, and one directly observed HTTP lifecycle.
+- [x] Update the frontend handoff with only the replay/checkpoint binding delta and remaining limitations.
+
+## 2026-08-29 — CodeRunners frontend route journey
+
+- [x] Reconcile the prior verification evidence with the current project-library changes before editing.
+- [x] Repair canonical worktree containment before wiring the browser journey.
+- [x] Preserve the completed backend contract layer and its untracked frontend route test; do not redesign or replace either.
+- [x] Complete focused interaction coverage for navigation, model choice, project selection, replay availability, deletion, keyboard and state coverage.
+- [x] Implement the typed frontend API boundary and Home, collection, player, and Settings routes using the persistent local-host contract layer.
+- [x] Add frontend bindings only, without duplicating generation, jobs, files, or player APIs.
+- [x] Implement loading, empty, unavailable, error, keyboard, and responsive states in the existing Studio visual system.
+- [x] Directly observe a finalized Codecast replay from the served fixture bundle; retain the explicit unavailable state when no replay manifest exists.
+- [x] Complete the desktop browser journey: Home project/model/workspace/branch selection, Codecast creation, collection, player replay, confirmed single-Codecast deletion, Settings persistence, and browser Back.
+- [x] Complete the 390px Home layout check with no horizontal overflow; valid client routes serve the SPA shell and unknown API routes remain JSON 404s.
+- [x] Rerun Studio (24 tests), Local Host (29 tests), project-library unit (4 tests), project-library API (3 tests), and Studio/Local Host typechecks after the focused empty-response deletion fix.
+- [x] Run focused tests and directly verify the implemented Home, collection, deletion, Settings, history, keyboard, and responsive journey in the shared browser; save visual evidence if it adds useful proof.
+
 ## 2026-08-28 — Dynamic Q6 batches and clean clone openings
 
 - [x] Replace the fixed four-chunk Q6 cap with conservative available-memory admission that retains 4 GiB headroom.

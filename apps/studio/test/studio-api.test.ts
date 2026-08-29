@@ -95,4 +95,69 @@ describe("Studio loopback client", () => {
       expect.any(Object),
     );
   });
+
+  it("accepts the empty 204 response from confirmed Codecast deletion", async () => {
+    const fetchImplementation = vi.fn().mockResolvedValue(new Response(null, { status: 204 }));
+    const client = new StudioApiClient(
+      "http://127.0.0.1:43110",
+      "launch-secret",
+      fetchImplementation,
+    );
+
+    await expect(client.deleteCodecast("codecast-1", "codecast-1")).resolves.toBeUndefined();
+  });
+
+  it("accepts an empty successful response from a confirmed Codecast deletion", async () => {
+    const fetchImplementation = vi.fn().mockResolvedValue(new Response(null, { status: 200 }));
+    const client = new StudioApiClient(
+      "http://127.0.0.1:43110",
+      "launch-secret",
+      fetchImplementation,
+    );
+
+    await expect(client.deleteCodecast("codecast-1", "codecast-1")).resolves.toBeUndefined();
+  });
+
+  it("fetches authenticated replay audio and writes only the typed checkpoint", async () => {
+    const fetchImplementation = vi
+      .fn()
+      .mockResolvedValueOnce(
+        new Response(new Uint8Array([82, 73, 70, 70]), {
+          status: 200,
+          headers: { "content-type": "audio/wav" },
+        }),
+      )
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ codecast: { id: "codecast-1" } }), {
+          status: 200,
+          headers: { "content-type": "application/json" },
+        }),
+      );
+    const client = new StudioApiClient(
+      "http://127.0.0.1:43110",
+      "launch-secret",
+      fetchImplementation,
+    );
+
+    const audio = await client.readReplayAudio("codecast-1");
+    await client.updateCheckpoint("codecast-1", {
+      positionMs: 2_000,
+      completedChallengeIds: [],
+      completed: false,
+    });
+
+    expect(audio.type).toBe("audio/wav");
+    expect(fetchImplementation).toHaveBeenNthCalledWith(
+      2,
+      "http://127.0.0.1:43110/api/codecasts/codecast-1/checkpoint",
+      expect.objectContaining({
+        body: JSON.stringify({
+          positionMs: 2_000,
+          completedChallengeIds: [],
+          completed: false,
+        }),
+        method: "PUT",
+      }),
+    );
+  });
 });

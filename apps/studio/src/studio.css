@@ -517,16 +517,10 @@ input:focus-visible {
   width: 2px;
   height: 19px;
   background: var(--text-primary);
-  animation: demo-caret-blink 800ms steps(1, end) infinite;
   pointer-events: none;
 }
 
 .demo-typing-caret[hidden] { display: none; }
-
-@keyframes demo-caret-blink {
-  0%, 48% { opacity: 1; }
-  49%, 100% { opacity: 0.18; }
-}
 
 .file-status {
   position: absolute;

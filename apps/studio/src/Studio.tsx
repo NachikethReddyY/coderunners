@@ -48,7 +48,7 @@ import {
   type DemoProjection,
 } from "./demo-projection.js";
 
-type SelectedLesson = {
+export type SelectedLesson = {
   audioUrl: string;
   manifest: CodecastManifest;
 };
@@ -59,16 +59,9 @@ declare global {
   }
 }
 
-const selectedLesson = window.__CODERUNNERS_LESSON__;
-const manifest = selectedLesson?.manifest ?? fixtureManifest as CodecastManifest;
-const audioUrl = selectedLesson?.audioUrl ?? fixtureAudioUrl;
-const storageKey = `coderunners:player:${manifest.id}`;
 const playbackRates = [0.75, 1, 1.25, 1.5, 2] as const;
 const continuingStatus = "Check passed. Continuing the lesson…";
 const newSessionStatus = "New lesson session started. Project files were left unchanged.";
-const demoStopAtMs = manifest.events.find(
-  (event) => event.type === "challenge.start",
-)?.atMs;
 const defaultSource = `export function formatHabitLabel(name: string): string {
   // TODO: Return a label containing the supplied habit name.
   void name;
@@ -83,8 +76,40 @@ type HostStatus = {
 
 type ActivePty = Pick<PtySession, "cursor" | "id">;
 
-export function Studio() {
-  const [player, dispatch] = useReducer(reducePlayer, undefined, restoreInitialState);
+export type PlaybackCheckpoint = {
+  positionMs: number;
+  completedChallengeIds: string[];
+};
+
+type StudioProps = {
+  api?: StudioApiClient;
+  initialCheckpoint?: PlaybackCheckpoint;
+  lesson?: SelectedLesson;
+  onCheckpoint?: (checkpoint: PlaybackCheckpoint & { completed: boolean }) => void;
+  onReturn?: () => void;
+};
+
+export function Studio({
+  api: providedApi,
+  initialCheckpoint,
+  lesson,
+  onCheckpoint,
+  onReturn,
+}: StudioProps = {}) {
+  const selectedLesson = lesson ?? window.__CODERUNNERS_LESSON__ ?? {
+    audioUrl: fixtureAudioUrl,
+    manifest: fixtureManifest as CodecastManifest,
+  };
+  const { audioUrl, manifest } = selectedLesson;
+  const storageKey = `coderunners:player:${manifest.id}`;
+  const demoStopAtMs = manifest.events.find(
+    (event) => event.type === "challenge.start",
+  )?.atMs;
+  const [player, dispatch] = useReducer(
+    (state: PlayerState, action: PlayerAction) => playerReducer(state, action, manifest),
+    undefined,
+    () => restoreInitialState(manifest, storageKey, initialCheckpoint),
+  );
   const [api, setApi] = useState<StudioApiClient | null>(null);
   const [hostStatus, setHostStatus] = useState<HostStatus>({
     kind: "connecting",
@@ -105,29 +130,40 @@ export function Studio() {
   const [volumeOpen, setVolumeOpen] = useState(false);
   const [captionsVisible, setCaptionsVisible] = useState(true);
   const audioRef = useRef<HTMLAudioElement>(null);
+  const initialPositionMsRef = useRef(player.timeMs);
   const reviewDialogRef = useRef<HTMLDialogElement>(null);
   const demoProjectionEnabled =
     activePath === manifest.project.entryFile && demoStopAtMs !== undefined;
   const [demoProjection, setDemoProjection] = useState<DemoProjection | undefined>(
-    () => getDemoProjection(activePath, player.timeMs),
+    () => getDemoProjection(manifest, demoStopAtMs, activePath, player.timeMs),
   );
   const demoProjectionRef = useRef(demoProjection);
   const updateDemoProjection = useCallback((timeMs: number) => {
-    const nextProjection = getDemoProjection(activePath, timeMs);
+    const nextProjection = getDemoProjection(
+      manifest,
+      demoStopAtMs,
+      activePath,
+      timeMs,
+    );
     if (sameDemoProjection(demoProjectionRef.current, nextProjection)) {
       return;
     }
     demoProjectionRef.current = nextProjection;
     setDemoProjection(nextProjection);
-  }, [activePath]);
+  }, [activePath, demoStopAtMs, manifest]);
 
   useEffect(() => {
     let cancelled = false;
-    const sessionToken = takeLaunchSession(window.location.href, (...args) => {
-      window.history.replaceState(...args);
-    });
+    const client = providedApi ?? (() => {
+      const sessionToken = takeLaunchSession(window.location.href, (...args) => {
+        window.history.replaceState(...args);
+      }) ?? readStoredSessionToken();
+      return sessionToken === undefined
+        ? undefined
+        : new StudioApiClient(window.location.origin, sessionToken);
+    })();
 
-    if (sessionToken === undefined) {
+    if (client === undefined) {
       setHostStatus({
         kind: "demo",
         message: "Preview mode. Open CodeRunners from the local launcher to edit and run checks.",
@@ -135,7 +171,6 @@ export function Studio() {
       return;
     }
 
-    const client = new StudioApiClient(window.location.origin, sessionToken);
     setApi(client);
     void (async () => {
       await client.validateManifest(manifest);
@@ -161,7 +196,7 @@ export function Studio() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [manifest, providedApi]);
 
   useEffect(() => {
     if (api === null) {
@@ -194,7 +229,25 @@ export function Studio() {
     } catch {
       // NOTE: Playback remains usable if browser storage is unavailable.
     }
-  }, [player]);
+  }, [player, storageKey]);
+
+  useEffect(() => {
+    if (onCheckpoint === undefined) {
+      return;
+    }
+    const timeout = window.setTimeout(() => {
+      onCheckpoint({
+        positionMs: player.timeMs,
+        completedChallengeIds: [...player.completedChallengeIds],
+        completed:
+          player.timeMs >= manifest.audio.durationMs &&
+          manifest.challenges.every((challenge) =>
+            player.completedChallengeIds.includes(challenge.id),
+          ),
+      });
+    }, 500);
+    return () => window.clearTimeout(timeout);
+  }, [manifest.audio.durationMs, onCheckpoint, player.completedChallengeIds, player.timeMs]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -209,6 +262,22 @@ export function Studio() {
       audio.currentTime = player.timeMs / 1_000;
     }
   }, [player.forwardSeekLocked, player.playback, player.timeMs]);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (audio === null) {
+      return;
+    }
+    const restorePosition = () => {
+      audio.currentTime = initialPositionMsRef.current / 1_000;
+    };
+    if (audio.readyState >= HTMLMediaElement.HAVE_METADATA) {
+      restorePosition();
+    } else {
+      audio.addEventListener("loadedmetadata", restorePosition, { once: true });
+    }
+    return () => audio.removeEventListener("loadedmetadata", restorePosition);
+  }, [audioUrl]);
 
   useEffect(() => {
     if (audioRef.current !== null) {
@@ -317,7 +386,7 @@ export function Studio() {
         audio.currentTime = nextState.timeMs / 1_000;
       }
     },
-    [player],
+    [manifest, player],
   );
 
   const togglePlayback = useCallback(async () => {
@@ -388,7 +457,7 @@ export function Studio() {
     setPreviewOpen(false);
     setLessonMenuOpen(false);
     setFileStatus(newSessionStatus);
-  }, []);
+  }, [manifest.project.entryFile]);
 
   const requestCheck = useCallback(async () => {
     if (api === null) {
@@ -482,7 +551,10 @@ export function Studio() {
   return (
     <main className={previewOpen ? "studio preview-open" : "studio"}>
       <audio
-        onEnded={() => dispatch({ type: "playback.paused" })}
+        onEnded={() => {
+          dispatch({ type: "clock.updated", timeMs: manifest.audio.durationMs });
+          dispatch({ type: "playback.paused" });
+        }}
         onTimeUpdate={(event) =>
           dispatch({ type: "clock.updated", timeMs: event.currentTarget.currentTime * 1_000 })
         }
@@ -517,6 +589,11 @@ export function Studio() {
           <span>{lessonState}</span>
         </div>
         <div className="lesson-actions">
+          {onReturn === undefined ? null : (
+            <button aria-label="Back to project" className="topbar-button" onClick={onReturn} type="button">
+              <span>Back</span>
+            </button>
+          )}
           <button
             aria-label={previewOpen ? "Close preview" : "Open preview"}
             className="topbar-button"
@@ -678,11 +755,34 @@ export function Studio() {
   );
 }
 
-function reducePlayer(state: PlayerState, action: PlayerAction): PlayerState {
-  return playerReducer(state, action, manifest);
+function readStoredSessionToken(): string | undefined {
+  try {
+    const token = window.sessionStorage.getItem("coderunners-session");
+    return token === null || token.length === 0 ? undefined : token;
+  } catch {
+    return undefined;
+  }
 }
 
-function restoreInitialState(): PlayerState {
+function restoreInitialState(
+  manifest: CodecastManifest,
+  storageKey: string,
+  checkpoint: PlaybackCheckpoint | undefined,
+): PlayerState {
+  if (checkpoint !== undefined) {
+    const challengeIds = new Set(manifest.challenges.map((challenge) => challenge.id));
+    const initial = {
+      ...createInitialPlayerState(manifest),
+      completedChallengeIds: checkpoint.completedChallengeIds.filter((id) =>
+        challengeIds.has(id),
+      ),
+    };
+    return playerReducer(
+      initial,
+      { type: "seek.requested", timeMs: checkpoint.positionMs },
+      manifest,
+    );
+  }
   try {
     return restorePlayerState(window.sessionStorage.getItem(storageKey), manifest);
   } catch {
@@ -726,6 +826,8 @@ function fileName(path: string): string {
 }
 
 function getDemoProjection(
+  manifest: CodecastManifest,
+  demoStopAtMs: number | undefined,
   activePath: string,
   timeMs: number,
 ): DemoProjection | undefined {

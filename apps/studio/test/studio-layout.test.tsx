@@ -72,7 +72,7 @@ describe("Studio layout", () => {
     fireEvent.change(timeline, { target: { value: timeline.max } });
     expect(screen.getByRole("button", { name: "Play Codecast" }).hasAttribute("disabled")).toBe(true);
     expect(speed.disabled).toBe(true);
-    expect(screen.getByRole("button", { name: "Adjust volume" }).disabled).toBe(true);
+    expect((screen.getByRole("button", { name: "Adjust volume" }) as HTMLButtonElement).disabled).toBe(true);
     expect(run.disabled).toBe(false);
     expect(save.disabled).toBe(false);
     expect(screen.queryByText("Demo")).toBeNull();

@@ -32,4 +32,7 @@ Main routes:
 - `POST /api/command-approvals` and `POST /api/command-approvals/:id/confirm`
 - `POST /api/pty/sessions`, plus typed output, input, resize, and stop routes
 
+The persistent multi-project registry, Codecast collection, branch/worktree,
+and model-settings contract is documented in [API.md](./API.md).
+
 Generation and demo playback have no route that can modify learner files or start a PTY. File writes require an expected revision; PTY creation requires a separate, expiring, single-use approval for one command from the most recently validated manifest. Health capabilities remain false until their project and command prerequisites are available.

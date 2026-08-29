@@ -38,10 +38,17 @@ export async function startLocalHost(
     ...(options.jobIdFactory === undefined
       ? {}
       : { jobIdFactory: options.jobIdFactory }),
+    ...(options.idFactory === undefined ? {} : { idFactory: options.idFactory }),
     ...(options.lessonAuthor === undefined
       ? {}
       : { lessonAuthor: options.lessonAuthor }),
+    ...(options.artifactGenerator === undefined
+      ? {}
+      : { artifactGenerator: options.artifactGenerator }),
     ...(options.now === undefined ? {} : { now: options.now }),
+    ...(options.approvedProjectRoots === undefined
+      ? {}
+      : { approvedProjectRoots: options.approvedProjectRoots }),
     ...(options.projectRoot === undefined
       ? {}
       : { projectRoot: options.projectRoot }),

@@ -13,6 +13,8 @@ export type JobStatus =
 export type GenerationJob = {
   id: string;
   type: "codecast.generate";
+  projectId?: string;
+  codecastId?: string;
   status: JobStatus;
   phase: string;
   createdAt: string;
@@ -64,6 +66,32 @@ export class JsonJobStore {
     await this.initialize();
     const job = this.jobs.get(id);
     return job === undefined ? undefined : structuredClone(job);
+  }
+
+  async list(): Promise<GenerationJob[]> {
+    await this.initialize();
+    return [...this.jobs.values()].map((job) => structuredClone(job));
+  }
+
+  async removeLinked(
+    id: string | null | undefined,
+    projectId: string,
+    codecastId: string,
+  ): Promise<void> {
+    await this.initialize();
+    if (id == null) {
+      return;
+    }
+    const job = this.jobs.get(id);
+    if (
+      job === undefined ||
+      job.projectId !== projectId ||
+      job.codecastId !== codecastId
+    ) {
+      return;
+    }
+    this.jobs.delete(id);
+    await this.persist();
   }
 
   async update(

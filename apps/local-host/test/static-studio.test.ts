@@ -41,7 +41,7 @@ describe("Studio static host", () => {
     expect(studio.status).toBe(200);
     expect(await studio.text()).toContain("CodeRunners Studio");
     expect(studio.headers.get("content-security-policy")).toBe(
-      "default-src 'self'; base-uri 'none'; frame-ancestors 'none'; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'",
+      "default-src 'self'; base-uri 'none'; frame-ancestors 'none'; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; media-src 'self' blob:",
     );
 
     const unauthenticatedApi = await fetch(`${host.origin}/api/health`, {

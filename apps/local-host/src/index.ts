@@ -1,4 +1,13 @@
 export {
+  LocalMediaArtifactGenerator,
+  ReplayArtifactError,
+  stageCodecastBundle,
+  validateCodecastBundle,
+  type CodecastArtifactGenerator,
+  type CodecastBundleMetadata,
+  type ValidatedCodecastBundle,
+} from "./codecast-artifacts.js";
+export {
   CodexLessonAuthor,
   type CodexClientPort,
   type CodexThreadPort,
@@ -34,6 +43,18 @@ export {
   type RunningLocalHost,
   type StartLocalHostOptions,
 } from "./launcher.js";
+export {
+  CodecastNotFoundError,
+  DeleteConfirmationError,
+  InvalidLibraryRequestError,
+  InvalidCheckpointError,
+  ModelSelectionError,
+  ProjectApprovalError,
+  ProjectLibrary,
+  ProjectNotFoundError,
+  WorkspaceError,
+  type ProjectLibraryOptions,
+} from "./project-library.js";
 export {
   ApprovalNotFoundError,
   ApprovalRequiredError,

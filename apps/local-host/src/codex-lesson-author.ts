@@ -35,6 +35,10 @@ export class CodexLessonAuthor implements LessonAuthor {
         approvalPolicy: "never",
         networkAccessEnabled: false,
         threadSource: "coderunners",
+        ...(request.model === undefined ? {} : { model: request.model }),
+        ...(request.reasoningEffort === undefined
+          ? {}
+          : { modelReasoningEffort: request.reasoningEffort }),
       });
       const turn = await thread.run(authorPrompt(request));
 

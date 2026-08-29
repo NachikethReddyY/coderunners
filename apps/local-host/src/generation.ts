@@ -1,6 +1,8 @@
 import {
   validateCodecastDraft,
+  type CodecastDraft,
   type ContractError,
+  type ReasoningLevel,
 } from "@coderunners/contracts";
 
 import { JsonJobStore } from "./jobs.js";
@@ -9,6 +11,8 @@ export type LessonAuthorRequest = {
   projectRoot: string;
   goal: string;
   diagnosticAnswers: string[];
+  model?: string;
+  reasoningEffort?: ReasoningLevel;
 };
 
 export type LessonAuthorResult = {
@@ -45,6 +49,7 @@ export async function runGenerationJob(options: {
   jobs: JsonJobStore;
   lessonAuthor: LessonAuthor;
   request: LessonAuthorRequest;
+  finalize?: (draft: CodecastDraft) => Promise<void>;
 }): Promise<void> {
   const { jobId, jobs, lessonAuthor, request } = options;
 
@@ -83,9 +88,14 @@ export async function runGenerationJob(options: {
       return;
     }
 
+    if (options.finalize !== undefined) {
+      await jobs.update(jobId, { phase: "finalizing" });
+      await options.finalize(validation.data);
+    }
+
     await jobs.update(jobId, {
       status: "succeeded",
-      phase: "validated",
+      phase: options.finalize === undefined ? "validated" : "finalized",
       result: { threadId: result.threadId, draft: validation.data },
     });
   } catch (error) {

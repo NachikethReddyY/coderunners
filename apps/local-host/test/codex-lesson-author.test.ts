@@ -39,6 +39,8 @@ describe("Codex lesson author adapter", () => {
       projectRoot: "/tmp/habit-tracker",
       goal: "Teach the state transition in a habit toggle.",
       diagnosticAnswers: ["I know React props.", "I am new to callbacks."],
+      model: "gpt-5.6-sol",
+      reasoningEffort: "xhigh",
     });
 
     expect(result).toEqual({ threadId: "thread-1", draft });
@@ -46,6 +48,8 @@ describe("Codex lesson author adapter", () => {
       workingDirectory: "/tmp/habit-tracker",
       sandboxMode: "read-only",
       approvalPolicy: "never",
+      model: "gpt-5.6-sol",
+      modelReasoningEffort: "xhigh",
       networkAccessEnabled: false,
       threadSource: "coderunners",
     });
@@ -80,6 +84,8 @@ describe("Codex lesson author adapter", () => {
         projectRoot: "/tmp/habit-tracker",
         goal: "Teach React props.",
         diagnosticAnswers: [],
+        model: "gpt-5.6-sol",
+        reasoningEffort: "high",
       }),
     ).rejects.toHaveProperty("cause", rootCause);
   });

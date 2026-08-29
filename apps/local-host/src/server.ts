@@ -10,6 +10,12 @@ import Fastify, {
 } from "fastify";
 import fastifyStatic from "@fastify/static";
 import {
+  LocalMediaArtifactGenerator,
+  ReplayArtifactError,
+  stageCodecastBundle,
+  type CodecastArtifactGenerator,
+} from "./codecast-artifacts.js";
+import {
   validateCommandDefinitions,
   validateCodecastManifest,
   type CommandDefinition,
@@ -43,19 +49,33 @@ import {
   PtySessions,
   type PtyFactory,
 } from "./pty.js";
+import {
+  CodecastNotFoundError,
+  DeleteConfirmationError,
+  InvalidLibraryRequestError,
+  InvalidCheckpointError,
+  ModelSelectionError,
+  ProjectApprovalError,
+  ProjectLibrary,
+  ProjectNotFoundError,
+  WorkspaceError,
+} from "./project-library.js";
 
 const CONTENT_SECURITY_POLICY =
-  "default-src 'self'; base-uri 'none'; frame-ancestors 'none'; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'";
+  "default-src 'self'; base-uri 'none'; frame-ancestors 'none'; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; media-src 'self' blob:";
 
 export type LocalHostOptions = {
   allowedOrigin: string;
   approvalIdFactory?: () => string;
   commands?: Record<string, CommandDefinition>;
   codecastDirectory?: string;
+  artifactGenerator?: CodecastArtifactGenerator;
   dataDirectory?: string;
+  idFactory?: () => string;
   jobIdFactory?: () => string;
   lessonAuthor?: LessonAuthor;
   now?: () => string;
+  approvedProjectRoots?: string[];
   projectRoot?: string;
   ptyFactory?: PtyFactory;
   ptyIdFactory?: () => string;
@@ -67,10 +87,34 @@ export function createLocalHostApp(options: LocalHostOptions): FastifyInstance {
   const app = Fastify({ logger: false });
   const now = options.now ?? (() => new Date().toISOString());
   const lessonAuthor = options.lessonAuthor ?? new CodexLessonAuthor();
-  const jobs = new JsonJobStore(
-    options.dataDirectory ?? defaultDataDirectory(),
+  const artifactGenerator =
+    options.artifactGenerator ?? new LocalMediaArtifactGenerator();
+  const dataDirectory = options.dataDirectory ?? defaultDataDirectory();
+  const jobs = new JsonJobStore(dataDirectory, now);
+  const projectLibrary = new ProjectLibrary({
+    approvedProjectRoots: [
+      ...(options.approvedProjectRoots ?? []),
+      ...(options.projectRoot === undefined ? [] : [options.projectRoot]),
+    ],
+    dataDirectory,
+    ...(options.codecastDirectory === undefined
+      ? {}
+      : { replayManifestUrl: "/codecast/manifest.json" }),
+    ...(options.idFactory === undefined ? {} : { idFactory: options.idFactory }),
     now,
-  );
+  });
+  let initialProjectRegistration: Promise<void> | undefined;
+  const ensureInitialProject = (): Promise<void> => {
+    initialProjectRegistration ??=
+      options.projectRoot === undefined
+        ? Promise.resolve()
+        : projectLibrary.addProject({ root: options.projectRoot }).then(() => undefined);
+    return initialProjectRegistration;
+  };
+  const reconcileCodecasts = async (): Promise<void> => {
+    await ensureInitialProject();
+    await projectLibrary.reconcileGenerationJobs(await jobs.list());
+  };
   const projectFiles =
     options.projectRoot === undefined
       ? undefined
@@ -101,6 +145,15 @@ export function createLocalHostApp(options: LocalHostOptions): FastifyInstance {
       root: options.studioDirectory,
       index: ["index.html"],
     });
+
+    const serveStudioShell = async (_request: unknown, reply: FastifyReply) =>
+      reply.sendFile("index.html");
+    app.get("/settings", serveStudioShell);
+    app.get("/projects/:projectId", serveStudioShell);
+    app.get(
+      "/projects/:projectId/codecasts/:codecastId",
+      serveStudioShell,
+    );
   }
 
   if (options.codecastDirectory !== undefined) {
@@ -167,6 +220,300 @@ export function createLocalHostApp(options: LocalHostOptions): FastifyInstance {
         pty: projectReady && approvals.hasCommands,
       },
     };
+  });
+
+  app.get("/api/projects", async (_request, reply) => {
+    try {
+      await ensureInitialProject();
+      return { projects: await projectLibrary.listProjects() };
+    } catch {
+      return libraryStorageFailed(reply);
+    }
+  });
+
+  app.post("/api/projects", async (request, reply) => {
+    const body = (request.body ?? {}) as {
+      root?: unknown;
+      displayName?: unknown;
+    };
+    if (
+      typeof body.root !== "string" ||
+      (body.displayName !== undefined && typeof body.displayName !== "string")
+    ) {
+      return invalidLibraryRequest(reply);
+    }
+    try {
+      await ensureInitialProject();
+      const project = await projectLibrary.addProject({
+        root: body.root,
+        ...(typeof body.displayName === "string"
+          ? { displayName: body.displayName }
+          : {}),
+      });
+      return reply.code(201).send({ project });
+    } catch (error) {
+      if (error instanceof ProjectApprovalError) {
+        return reply.code(403).send({
+          error: {
+            code: "PROJECT_NOT_APPROVED",
+            message: "Choose a folder approved by the local launcher.",
+          },
+        });
+      }
+      if (error instanceof InvalidLibraryRequestError) {
+        return invalidLibraryRequest(reply);
+      }
+      return libraryStorageFailed(reply);
+    }
+  });
+
+  app.get("/api/projects/:projectId/branches", async (request, reply) => {
+    const { projectId } = request.params as { projectId: string };
+    try {
+      await ensureInitialProject();
+      return { branches: await projectLibrary.listBranches(projectId) };
+    } catch (error) {
+      if (error instanceof ProjectNotFoundError) {
+        return projectNotFound(reply);
+      }
+      if (error instanceof WorkspaceError) {
+        return reply.code(409).send({
+          error: {
+            code: "BRANCH_DISCOVERY_FAILED",
+            message: "Refresh the project or restore its Git repository.",
+          },
+        });
+      }
+      return libraryStorageFailed(reply);
+    }
+  });
+
+  app.post(
+    "/api/projects/:projectId/codecasts",
+    async (request, reply) => {
+      const { projectId } = request.params as { projectId: string };
+      try {
+        await ensureInitialProject();
+        const timestamp = now();
+        const jobId = options.jobIdFactory?.() ?? randomUUID();
+        const codecast = await projectLibrary.createCodecast(
+          projectId,
+          request.body,
+          jobId,
+        );
+        const context = await projectLibrary.getGenerationContext(codecast.id, jobId);
+        const job: GenerationJob = {
+          id: jobId,
+          type: "codecast.generate",
+          projectId: context.projectId,
+          codecastId: context.codecastId,
+          status: "queued",
+          phase: "queued",
+          createdAt: timestamp,
+          updatedAt: timestamp,
+        };
+        await jobs.create(job);
+        setImmediate(() => {
+          void runGenerationJob({
+            jobId,
+            jobs,
+            lessonAuthor,
+            request: {
+              projectRoot: context.projectRoot,
+              goal: codecast.outcome,
+              diagnosticAnswers: [],
+              model: context.authorModelId,
+              reasoningEffort: context.models.authoringReasoning,
+            },
+            finalize: async (draft) => {
+              const stagingDirectory = await stageCodecastBundle({
+                dataDirectory,
+                projectId: context.projectId,
+                codecastId: context.codecastId,
+                jobId,
+                draft,
+                models: context.models,
+                generator: artifactGenerator,
+              });
+              await projectLibrary.promoteCodecastBundle(
+                context.codecastId,
+                jobId,
+                stagingDirectory,
+              );
+            },
+          })
+            .then(reconcileCodecasts)
+            .catch(() => {
+              // NOTE: Storage outages are surfaced by the next collection read.
+            });
+        });
+        return reply.code(201).send({ codecast });
+      } catch (error) {
+        if (error instanceof ProjectNotFoundError) {
+          return projectNotFound(reply);
+        }
+        if (error instanceof InvalidLibraryRequestError) {
+          return invalidLibraryRequest(reply);
+        }
+        if (error instanceof ModelSelectionError) {
+          return reply.code(409).send({
+            error: { code: "MODEL_UNAVAILABLE", message: error.message },
+          });
+        }
+        if (error instanceof WorkspaceError) {
+          return reply.code(409).send({
+            error: { code: "WORKSPACE_UNAVAILABLE", message: error.message },
+          });
+        }
+        return libraryStorageFailed(reply);
+      }
+    },
+  );
+
+  app.get(
+    "/api/projects/:projectId/codecasts",
+    async (request, reply) => {
+      const { projectId } = request.params as { projectId: string };
+      try {
+        await reconcileCodecasts();
+        return { codecasts: await projectLibrary.listCodecasts(projectId) };
+      } catch (error) {
+        if (error instanceof ProjectNotFoundError) {
+          return projectNotFound(reply);
+        }
+        return libraryStorageFailed(reply);
+      }
+    },
+  );
+
+  app.get("/api/codecasts/:codecastId/replay", async (request, reply) => {
+    const { codecastId } = request.params as { codecastId: string };
+    try {
+      await reconcileCodecasts();
+      return { replay: await projectLibrary.getReplayMetadata(codecastId) };
+    } catch (error) {
+      if (error instanceof CodecastNotFoundError) {
+        return codecastNotFound(reply);
+      }
+      if (error instanceof ReplayArtifactError) {
+        return replayArtifactInvalid(reply);
+      }
+      return libraryStorageFailed(reply);
+    }
+  });
+
+  app.get("/api/codecasts/:codecastId/manifest", async (request, reply) => {
+    const { codecastId } = request.params as { codecastId: string };
+    try {
+      await reconcileCodecasts();
+      return await projectLibrary.getReplayManifest(codecastId);
+    } catch (error) {
+      if (error instanceof CodecastNotFoundError) {
+        return codecastNotFound(reply);
+      }
+      if (error instanceof ReplayArtifactError) {
+        return replayArtifactInvalid(reply);
+      }
+      return libraryStorageFailed(reply);
+    }
+  });
+
+  app.get("/api/codecasts/:codecastId/audio", async (request, reply) => {
+    const { codecastId } = request.params as { codecastId: string };
+    try {
+      await reconcileCodecasts();
+      const audioPath = await projectLibrary.getReplayAudioPath(codecastId);
+      reply.type("audio/wav");
+      return await readFile(audioPath);
+    } catch (error) {
+      if (error instanceof CodecastNotFoundError) {
+        return codecastNotFound(reply);
+      }
+      if (error instanceof ReplayArtifactError) {
+        return replayArtifactInvalid(reply);
+      }
+      return libraryStorageFailed(reply);
+    }
+  });
+
+  app.put("/api/codecasts/:codecastId/checkpoint", async (request, reply) => {
+    const { codecastId } = request.params as { codecastId: string };
+    try {
+      await reconcileCodecasts();
+      return {
+        codecast: await projectLibrary.updateCheckpoint(codecastId, request.body),
+      };
+    } catch (error) {
+      if (error instanceof CodecastNotFoundError) {
+        return codecastNotFound(reply);
+      }
+      if (error instanceof InvalidCheckpointError) {
+        return reply.code(400).send({
+          error: {
+            code: "INVALID_CHECKPOINT",
+            message: "Save a checkpoint inside this Codecast timeline.",
+          },
+        });
+      }
+      if (error instanceof ReplayArtifactError) {
+        return replayArtifactInvalid(reply);
+      }
+      return libraryStorageFailed(reply);
+    }
+  });
+
+  app.delete("/api/codecasts/:codecastId", async (request, reply) => {
+    const { codecastId } = request.params as { codecastId: string };
+    const body = (request.body ?? {}) as { confirmCodecastId?: unknown };
+    try {
+      await ensureInitialProject();
+      const deleted = await projectLibrary.deleteCodecast(
+        codecastId,
+        typeof body.confirmCodecastId === "string"
+          ? body.confirmCodecastId
+          : "",
+      );
+      await jobs.removeLinked(
+        deleted.generationJobId,
+        deleted.projectId,
+        codecastId,
+      );
+      return reply.code(204).send();
+    } catch (error) {
+      if (error instanceof DeleteConfirmationError) {
+        return reply.code(400).send({
+          error: {
+            code: "DELETE_CONFIRMATION_MISMATCH",
+            message: "Confirm the exact Codecast identifier before deleting.",
+          },
+        });
+      }
+      if (error instanceof CodecastNotFoundError) {
+        return codecastNotFound(reply);
+      }
+      return libraryStorageFailed(reply);
+    }
+  });
+
+  app.get("/api/models", async (_request, reply) => {
+    try {
+      return { configuration: await projectLibrary.getModelConfiguration() };
+    } catch {
+      return libraryStorageFailed(reply);
+    }
+  });
+
+  app.put("/api/settings/models", async (request, reply) => {
+    try {
+      return {
+        configuration: await projectLibrary.updateModelConfiguration(request.body),
+      };
+    } catch (error) {
+      if (error instanceof InvalidLibraryRequestError) {
+        return invalidLibraryRequest(reply);
+      }
+      return libraryStorageFailed(reply);
+    }
   });
 
   app.get("/api/files/content", async (request, reply) => {
@@ -628,6 +975,51 @@ function ptyNotFound(reply: FastifyReply) {
     error: {
       code: "PTY_NOT_FOUND",
       message: "Run the command again.",
+    },
+  });
+}
+
+function projectNotFound(reply: FastifyReply) {
+  return reply.code(404).send({
+    error: {
+      code: "PROJECT_NOT_FOUND",
+      message: "Choose a registered project.",
+    },
+  });
+}
+
+function codecastNotFound(reply: FastifyReply) {
+  return reply.code(404).send({
+    error: {
+      code: "CODECAST_NOT_FOUND",
+      message: "Choose an existing Codecast.",
+    },
+  });
+}
+
+function replayArtifactInvalid(reply: FastifyReply) {
+  return reply.code(409).send({
+    error: {
+      code: "REPLAY_ARTIFACT_INVALID",
+      message: "Regenerate this Codecast because its replay files are unavailable.",
+    },
+  });
+}
+
+function invalidLibraryRequest(reply: FastifyReply) {
+  return reply.code(400).send({
+    error: {
+      code: "INVALID_LIBRARY_REQUEST",
+      message: "Check the submitted project, Codecast, or model settings.",
+    },
+  });
+}
+
+function libraryStorageFailed(reply: FastifyReply) {
+  return reply.code(503).send({
+    error: {
+      code: "LIBRARY_STORAGE_FAILED",
+      message: "Project library state could not be read or saved.",
     },
   });
 }

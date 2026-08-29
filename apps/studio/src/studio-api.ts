@@ -1,3 +1,16 @@
+import type {
+  BranchListResponse,
+  CodecastListResponse,
+  CodecastReplayResponse,
+  CodecastResponse,
+  CreateCodecastRequest,
+  DeleteCodecastRequest,
+  ModelConfigurationResponse,
+  ModelSettingsUpdate,
+  PlaybackCheckpointUpdate,
+  ProjectListResponse,
+} from "@coderunners/contracts";
+
 export type HostCapabilities = {
   codecastGeneration: boolean;
   files: boolean;
@@ -95,6 +108,67 @@ export class StudioApiClient {
     return this.request("/api/health");
   }
 
+  listProjects(): Promise<ProjectListResponse> {
+    return this.request("/api/projects");
+  }
+
+  listBranches(projectId: string): Promise<BranchListResponse> {
+    return this.request(`/api/projects/${encodeURIComponent(projectId)}/branches`);
+  }
+
+  listCodecasts(projectId: string): Promise<CodecastListResponse> {
+    return this.request(`/api/projects/${encodeURIComponent(projectId)}/codecasts`);
+  }
+
+  createCodecast(
+    projectId: string,
+    request: CreateCodecastRequest,
+  ): Promise<CodecastResponse> {
+    return this.request(`/api/projects/${encodeURIComponent(projectId)}/codecasts`, {
+      body: JSON.stringify(request),
+      method: "POST",
+    });
+  }
+
+  getReplay(codecastId: string): Promise<CodecastReplayResponse> {
+    return this.request(`/api/codecasts/${encodeURIComponent(codecastId)}/replay`);
+  }
+
+  readReplayAudio(codecastId: string): Promise<Blob> {
+    return this.requestBlob(`/api/codecasts/${encodeURIComponent(codecastId)}/audio`);
+  }
+
+  updateCheckpoint(
+    codecastId: string,
+    checkpoint: PlaybackCheckpointUpdate,
+  ): Promise<CodecastResponse> {
+    return this.request(`/api/codecasts/${encodeURIComponent(codecastId)}/checkpoint`, {
+      body: JSON.stringify(checkpoint),
+      method: "PUT",
+    });
+  }
+
+  deleteCodecast(
+    codecastId: string,
+    confirmCodecastId: DeleteCodecastRequest["confirmCodecastId"],
+  ): Promise<void> {
+    return this.request(`/api/codecasts/${encodeURIComponent(codecastId)}`, {
+      body: JSON.stringify({ confirmCodecastId }),
+      method: "DELETE",
+    });
+  }
+
+  getModels(): Promise<ModelConfigurationResponse> {
+    return this.request("/api/models");
+  }
+
+  updateModels(update: ModelSettingsUpdate): Promise<ModelConfigurationResponse> {
+    return this.request("/api/settings/models", {
+      body: JSON.stringify(update),
+      method: "PUT",
+    });
+  }
+
   validateManifest(manifest: unknown): Promise<{ valid: true; manifest: unknown }> {
     return this.request("/api/codecasts/validate", {
       body: JSON.stringify(manifest),
@@ -159,6 +233,23 @@ export class StudioApiClient {
   }
 
   private async request<T>(path: string, init: RequestInit = {}): Promise<T> {
+    const response = await this.fetchResponse(path, init);
+
+    if (response.status === 204) {
+      return undefined as T;
+    }
+
+    const responseText = await response.text();
+    return responseText.trim().length === 0
+      ? (undefined as T)
+      : (JSON.parse(responseText) as T);
+  }
+
+  private async requestBlob(path: string): Promise<Blob> {
+    return (await this.fetchResponse(path)).blob();
+  }
+
+  private async fetchResponse(path: string, init: RequestInit = {}): Promise<Response> {
     const headers = new Headers(init.headers);
     headers.set("Accept", "application/json");
     if (init.body !== undefined) {
@@ -196,6 +287,6 @@ export class StudioApiClient {
       );
     }
 
-    return (await response.json()) as T;
+    return response;
   }
 }
